@@ -29,7 +29,6 @@ void onWindowResized(GLFWwindow * /*window*/, int width, int height)
 
 	glViewport(0, 0, width, height);
 	std::cerr << "Setting 3D projection" << std::endl;
-	// TO DO EX01 part 2
 	myEngine.set3DProjection(90.0, aspectRatio, Z_NEAR, Z_FAR);
 }
 
@@ -64,17 +63,12 @@ void onKey(GLFWwindow *window, int key, int /*scancode*/, int action, int /*mods
 		break;
 
 	case GLFW_KEY_R:
-		//> EXO 3
-		// dist_zoom *= 0.9;
 		if (is_pressed)
 			flag_anim_rot_scale = !flag_anim_rot_scale;
 		break;
 	case GLFW_KEY_T:
-		//> EXO 3
 		if (is_pressed)
 			flag_anim_rot_arm = !flag_anim_rot_arm;
-		// dist_zoom *= 1.1;
-		//< FIN EXO 3
 		break;
 	default:
 		std::cerr << "Touche non gérée " << key << std::endl;
