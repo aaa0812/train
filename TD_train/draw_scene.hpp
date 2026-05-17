@@ -21,6 +21,8 @@ extern GLBI_Engine myEngine;
 
 void initScene();
 
+void drawGround();
+
 void drawFrame();
 
 void drawSphere(double time_ellapsed);

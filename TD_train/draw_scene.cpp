@@ -25,10 +25,10 @@ void initScene()
 
 	somePoints.initSet(points, colors);
 
-	std::vector<float> baseCarre{-10.0, -10.0, 0.0,
-								 10.0, -10.0, 0.0,
-								 10.0, 10.0, 0.0,
-								 -10.0, 10.0, 0.0};
+	std::vector<float> square{-1.0, -1.0, 0.0,
+							  1.0, -1.0, 0.0,
+							  1.0, 1.0, 0.0,
+							  -1.0, 1.0, 0.0};
 
 	for (int i = 0; i <= 100; i++)
 	{
@@ -37,7 +37,7 @@ void initScene()
 	}
 	disk.initShape(disk_origin);
 
-	ground.initShape(baseCarre);
+	ground.initShape(square);
 	ground.changeNature(GL_TRIANGLE_FAN);
 
 	sphere = basicSphere(1.0);
@@ -45,6 +45,30 @@ void initScene()
 
 	cone = basicCone(1.0, 1.0);
 	cone->createVAO();
+}
+
+void drawGround()
+{
+	myEngine.setFlatColor(0.5, 0.5, 0.5);
+	myEngine.mvMatrixStack.pushMatrix();
+	{
+		myEngine.mvMatrixStack.addHomothety(10);
+		myEngine.mvMatrixStack.addTranslation(STP3D::Vector3D{-5, -5, 0});
+		for (int i = 0; i < 10; i++)
+		{
+			for (int j = 0; j < 10; j++)
+			{
+				myEngine.mvMatrixStack.pushMatrix();
+				{
+					myEngine.mvMatrixStack.addTranslation(STP3D::Vector3D{i, j, 0});
+					myEngine.updateMvMatrix();
+					ground.drawShape();
+				}
+				myEngine.mvMatrixStack.popMatrix();
+			}
+		}
+	}
+	myEngine.mvMatrixStack.popMatrix();
 }
 
 void drawFrame()
@@ -134,8 +158,9 @@ void drawScene(double time_ellapsed)
 {
 	// glPointSize(10.0);
 
-	//drawFrame();
-	drawBase();
+	drawGround();
+	// drawFrame();
+	/* drawBase();
 	myEngine.mvMatrixStack.pushMatrix();
 	{
 		myEngine.mvMatrixStack.addTranslation(STP3D::Vector3D(0.0, 0.0, 10.0));
@@ -154,8 +179,7 @@ void drawScene(double time_ellapsed)
 	myEngine.mvMatrixStack.popMatrix();
 	myEngine.updateMvMatrix();
 
-	// drawSphere(time_ellapsed);
+	drawSphere(time_ellapsed);
 
-	myEngine.setFlatColor(0.5, 0.5, 0.5);
-	ground.drawShape();
+	myEngine.setFlatColor(0.5, 0.5, 0.5); */
 }
