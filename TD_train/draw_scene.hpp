@@ -31,11 +31,5 @@ void drawBase();
 
 void drawArm();
 
-void drawPan();
-
 void drawScene(double time_ellapsed);
-
-void rotateBlance(double time_ellapsed);
-
-void rotateArm(double time_ellapsed);
 
