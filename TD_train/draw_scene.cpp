@@ -13,6 +13,8 @@ GLBI_Convex_2D_Shape ground{3};
 
 IndexedMesh *sphere;
 StandardMesh *cone;
+IndexedMesh *cube;
+IndexedMesh *cylinder;
 GLBI_Convex_2D_Shape disk;
 
 void initScene()
@@ -39,12 +41,19 @@ void initScene()
 
 	ground.initShape(square);
 	ground.changeNature(GL_TRIANGLE_FAN);
+	ground.changeNature(GL_LINES);
 
 	sphere = basicSphere(1.0);
 	sphere->createVAO();
 
 	cone = basicCone(1.0, 1.0);
 	cone->createVAO();
+
+	cube = basicCube(1.0);
+	cube->createVAO();
+
+	cylinder = basicCylinder(1.f, 1.f);
+	cylinder->createVAO();
 }
 
 void drawGround()
@@ -67,6 +76,66 @@ void drawGround()
 				myEngine.mvMatrixStack.popMatrix();
 			}
 		}
+	}
+	myEngine.mvMatrixStack.popMatrix();
+}
+
+void drawOneRail()
+{
+	const float SR = 1.f; // rail weight and heigth
+	const int LENGTH = 10;
+	myEngine.setFlatColor(0.3, 0.3, 0.3);
+
+	myEngine.mvMatrixStack.pushMatrix();
+	{
+		myEngine.mvMatrixStack.addHomothety(STP3D::Vector3D{SR, LENGTH, SR});
+		myEngine.updateMvMatrix();
+		cube->draw();
+	}
+	myEngine.mvMatrixStack.popMatrix();
+	myEngine.updateMvMatrix();
+}
+
+void drawBallast()
+{
+	const float RR = 0.5f; // ballast radius
+	const int LENGTH = 6;
+	myEngine.setFlatColor(0.6, 0.4, 0.3);
+
+	myEngine.mvMatrixStack.pushMatrix();
+	{
+		myEngine.mvMatrixStack.addTranslation(STP3D::Vector3D{LENGTH / 2, 0, 0});
+		myEngine.mvMatrixStack.addHomothety(STP3D::Vector3D{LENGTH, RR, RR});
+		myEngine.mvMatrixStack.addRotation(M_PI / 2, STP3D::Vector3D{0, 0, 1});
+
+		myEngine.updateMvMatrix();
+		cylinder->draw();
+	}
+	myEngine.mvMatrixStack.popMatrix();
+}
+
+void drawCompleteRail()
+{
+	myEngine.mvMatrixStack.pushMatrix();
+	{
+		myEngine.mvMatrixStack.addTranslation(STP3D::Vector3D{0, -6, 0});
+		for (int i = 0; i < 5; i++)
+		{
+			myEngine.mvMatrixStack.addTranslation(STP3D::Vector3D{0, 2, 0});
+			myEngine.updateMvMatrix();
+			drawBallast();
+		}
+	}
+	myEngine.mvMatrixStack.popMatrix();
+
+	myEngine.mvMatrixStack.pushMatrix();
+	{
+		myEngine.mvMatrixStack.addTranslation(STP3D::Vector3D{-2, 0, 1.f}); // translate on the z axis to make the rails on top of the ballast
+		myEngine.updateMvMatrix();
+		drawOneRail();
+		myEngine.mvMatrixStack.addTranslation(STP3D::Vector3D{4, 0, 0});
+		myEngine.updateMvMatrix();
+		drawOneRail();
 	}
 	myEngine.mvMatrixStack.popMatrix();
 }
@@ -156,30 +225,6 @@ void drawArm()
 
 void drawScene(double time_ellapsed)
 {
-	// glPointSize(10.0);
-
 	drawGround();
-	// drawFrame();
-	/* drawBase();
-	myEngine.mvMatrixStack.pushMatrix();
-	{
-		myEngine.mvMatrixStack.addTranslation(STP3D::Vector3D(0.0, 0.0, 10.0));
-		myEngine.updateMvMatrix();
-		drawArm();
-	}
-	myEngine.mvMatrixStack.popMatrix();
-
-	myEngine.mvMatrixStack.pushMatrix();
-	{
-		myEngine.mvMatrixStack.addTranslation(STP3D::Vector3D(0.0, 10.0, 5.0));
-		myEngine.updateMvMatrix();
-		myEngine.mvMatrixStack.addTranslation(STP3D::Vector3D(0.0, -20.0, 0.0));
-		myEngine.updateMvMatrix();
-	}
-	myEngine.mvMatrixStack.popMatrix();
-	myEngine.updateMvMatrix();
-
-	drawSphere(time_ellapsed);
-
-	myEngine.setFlatColor(0.5, 0.5, 0.5); */
+	drawCompleteRail();
 }

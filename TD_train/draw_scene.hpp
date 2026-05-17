@@ -23,6 +23,12 @@ void initScene();
 
 void drawGround();
 
+void drawOneRail();
+
+void drawBallast();
+
+void drawCompleteRail();
+
 void drawFrame();
 
 void drawSphere(double time_ellapsed);
