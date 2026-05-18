@@ -39,8 +39,4 @@ void drawSphere(double time_ellapsed);
 
 void rotateSphere(double time_ellapsed, float radius, STP3D::Vector3D origin_point = {0.0, 0.0, 0.0});
 
-void drawBase();
-
-void drawArm();
-
 void drawScene(double time_ellapsed);

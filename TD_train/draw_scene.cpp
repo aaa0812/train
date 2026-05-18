@@ -139,6 +139,8 @@ void drawBallast()
 void drawCompleteRail()
 {
 	myEngine.mvMatrixStack.pushMatrix();
+	myEngine.mvMatrixStack.addTranslation(STP3D::Vector3D{-5, 5, 0});
+	myEngine.mvMatrixStack.pushMatrix();
 	{
 		myEngine.mvMatrixStack.addTranslation(STP3D::Vector3D{0, -6, 0});
 		for (int i = 0; i < 5; i++)
@@ -160,15 +162,16 @@ void drawCompleteRail()
 		drawOneRail();
 	}
 	myEngine.mvMatrixStack.popMatrix();
+	myEngine.mvMatrixStack.popMatrix();
 }
 
 void drawCompleteCurvedRail()
 {
-	for (int i = 1; i < 6; i+=2)
+	for (int i = 1; i < 6; i += 2)
 	{
 		myEngine.mvMatrixStack.pushMatrix();
 		{
-			myEngine.mvMatrixStack.addRotation(M_PI *i / 12, STP3D::Vector3D{0, 0, 1});
+			myEngine.mvMatrixStack.addRotation(M_PI * i / 12, STP3D::Vector3D{0, 0, 1});
 			myEngine.mvMatrixStack.addTranslation(STP3D::Vector3D{-5, 0, 0});
 			myEngine.updateMvMatrix();
 			drawBallast();
@@ -215,66 +218,10 @@ void rotateSphere(double time_ellapsed, float radius, STP3D::Vector3D /* origin_
 	myEngine.updateMvMatrix();
 }
 
-void drawBase()
-{
-	myEngine.setFlatColor(235.f / 255.f, 207.f / 255.f, 52.f / 255.f);
-	myEngine.mvMatrixStack.pushMatrix();
-	{
-		myEngine.mvMatrixStack.pushMatrix();
-		{
-			myEngine.mvMatrixStack.addHomothety(6.0);
-			myEngine.updateMvMatrix();
-			disk.changeNature(GL_TRIANGLE_FAN);
-			disk.drawShape();
-		}
-		myEngine.mvMatrixStack.popMatrix();
-
-		myEngine.mvMatrixStack.addRotation(M_PI / 180 * 90, STP3D::Vector3D(1.0, 0.0, 0.0));
-		myEngine.mvMatrixStack.addHomothety(STP3D::Vector3D(4.0, 10.0, 4.0));
-		myEngine.updateMvMatrix();
-		cone->draw();
-	}
-	myEngine.mvMatrixStack.popMatrix();
-	myEngine.updateMvMatrix();
-}
-
-void drawArm()
-{
-	myEngine.setFlatColor(245.f / 255.f, 164.f / 255.f, 66.f / 255.f);
-	myEngine.mvMatrixStack.pushMatrix();
-	{
-		myEngine.mvMatrixStack.pushMatrix();
-		{
-			myEngine.mvMatrixStack.addHomothety(STP3D::Vector3D(1.6));
-			myEngine.updateMvMatrix();
-			sphere->draw();
-		}
-		myEngine.mvMatrixStack.popMatrix();
-		myEngine.updateMvMatrix();
-
-		myEngine.mvMatrixStack.pushMatrix();
-		{
-			// first cone
-			myEngine.mvMatrixStack.addHomothety(STP3D::Vector3D(1.0, 10.0, 1.0));
-			myEngine.updateMvMatrix();
-			cone->draw();
-			// second cone
-			myEngine.mvMatrixStack.addRotation(M_PI, STP3D::Vector3D(0.0, 0.0, 1.0));
-			myEngine.updateMvMatrix();
-			cone->draw();
-		}
-		myEngine.mvMatrixStack.popMatrix();
-	}
-	myEngine.mvMatrixStack.popMatrix();
-	myEngine.updateMvMatrix();
-}
-
 void drawScene(double time_ellapsed)
 {
 	drawGround();
 	drawCompleteCurvedRail();
-	myEngine.mvMatrixStack.pushMatrix();
-	myEngine.mvMatrixStack.addTranslation(STP3D::Vector3D{-5,5,0});
+
 	drawCompleteRail();
-	myEngine.mvMatrixStack.popMatrix();
 }
