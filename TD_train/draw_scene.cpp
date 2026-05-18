@@ -10,6 +10,7 @@ bool flag_anim_rot_arm{false};
 GLBI_Engine myEngine;
 GLBI_Set_Of_Points somePoints(3);
 GLBI_Convex_2D_Shape ground{3};
+GLBI_Convex_2D_Shape grid{3};
 
 IndexedMesh *sphere;
 StandardMesh *cone;
@@ -27,8 +28,14 @@ void initScene()
 
 	somePoints.initSet(points, colors);
 
-	std::vector<float> square{-1.0, -1.0, 0.0,
+	std::vector<float> groundSquare{-1.0, -1.0, 0.0,
 							  1.0, -1.0, 0.0,
+							  1.0, 1.0, 0.0,
+							  -1.0, 1.0, 0.0};
+	std::vector<float> gridSquare{-1.0, -1.0, 0.0,
+							  1.0, -1.0, 0.0,
+							  1.0, -1.0, 0.0,
+							  1.0, 1.0, 0.0,
 							  1.0, 1.0, 0.0,
 							  -1.0, 1.0, 0.0};
 
@@ -39,9 +46,10 @@ void initScene()
 	}
 	disk.initShape(disk_origin);
 
-	ground.initShape(square);
+	ground.initShape(groundSquare);
 	ground.changeNature(GL_TRIANGLE_FAN);
-	ground.changeNature(GL_LINES);
+	grid.initShape(gridSquare);
+	grid.changeNature(GL_LINES);
 
 	sphere = basicSphere(1.0);
 	sphere->createVAO();
@@ -56,9 +64,8 @@ void initScene()
 	cylinder->createVAO();
 }
 
-void drawGround()
+void drawGround(bool displayGrid)
 {
-	myEngine.setFlatColor(0.5, 0.5, 0.5);
 	myEngine.mvMatrixStack.pushMatrix();
 	{
 		myEngine.mvMatrixStack.addHomothety(10);
@@ -71,7 +78,13 @@ void drawGround()
 				{
 					myEngine.mvMatrixStack.addTranslation(STP3D::Vector3D{i, j, 0});
 					myEngine.updateMvMatrix();
+					myEngine.setFlatColor(0.5, 0.5, 0.5);
 					ground.drawShape();
+					if (displayGrid)
+					{
+						myEngine.setFlatColor(1, 0, 0);
+						grid.drawShape();
+					}
 				}
 				myEngine.mvMatrixStack.popMatrix();
 			}
@@ -218,9 +231,9 @@ void rotateSphere(double time_ellapsed, float radius, STP3D::Vector3D /* origin_
 	myEngine.updateMvMatrix();
 }
 
-void drawScene(double time_ellapsed)
+void drawScene(double time_ellapsed, bool displayGrid)
 {
-	drawGround();
+	drawGround(displayGrid);
 	drawCompleteCurvedRail();
 
 	drawCompleteRail();

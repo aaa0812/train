@@ -17,6 +17,8 @@ static float aspectRatio = 1.0f;
 /* Minimal time wanted between two images */
 static const double FRAMERATE_IN_SECONDS = 1. / 30.;
 
+static bool displayGrid = false;
+
 /* Error handling function */
 void onError(int error, const char *description)
 {
@@ -64,7 +66,7 @@ void onKey(GLFWwindow *window, int key, int /*scancode*/, int action, int /*mods
 
 	case GLFW_KEY_R:
 		if (is_pressed)
-			flag_anim_rot_scale = !flag_anim_rot_scale;
+			displayGrid = !displayGrid;
 		break;
 	case GLFW_KEY_T:
 		if (is_pressed)
@@ -161,7 +163,7 @@ int main(int /*argc*/, char ** /*argv*/)
 		myEngine.setViewMatrix(viewMatrix);
 		myEngine.updateMvMatrix();
 
-		drawScene(startTime);
+		drawScene(startTime, displayGrid);
 
 		/* Swap front and back buffers */
 		glfwSwapBuffers(window);

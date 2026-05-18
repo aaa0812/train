@@ -21,7 +21,7 @@ extern GLBI_Engine myEngine;
 
 void initScene();
 
-void drawGround();
+void drawGround(bool displayGrid = false);
 
 void drawOneRail();
 
@@ -39,4 +39,4 @@ void drawSphere(double time_ellapsed);
 
 void rotateSphere(double time_ellapsed, float radius, STP3D::Vector3D origin_point = {0.0, 0.0, 0.0});
 
-void drawScene(double time_ellapsed);
+void drawScene(double time_ellapsed, bool displayGrid = false);
