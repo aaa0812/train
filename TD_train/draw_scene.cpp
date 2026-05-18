@@ -78,6 +78,7 @@ void drawGround()
 		}
 	}
 	myEngine.mvMatrixStack.popMatrix();
+	myEngine.updateMvMatrix();
 }
 
 void drawOneRail()
@@ -93,6 +94,27 @@ void drawOneRail()
 		cube->draw();
 	}
 	myEngine.mvMatrixStack.popMatrix();
+	myEngine.updateMvMatrix();
+}
+
+void drawOneCurvedRail(int maxIteration /*default = 10*/, float position /*default = 3*/)
+{
+	const float SR = 1.f; // rail weight and heigth
+	const int LENGTH = SR;
+	myEngine.setFlatColor(0.3, 0.3, 0.3);
+
+	for (int i = 0; i < maxIteration; i++)
+	{
+		myEngine.mvMatrixStack.pushMatrix();
+		{
+			myEngine.mvMatrixStack.addRotation(-M_PI / 2 * i / maxIteration, STP3D::Vector3D{0, 0, 1});
+			myEngine.mvMatrixStack.addTranslation(STP3D::Vector3D{0, -position, 0});
+			myEngine.mvMatrixStack.addHomothety(STP3D::Vector3D{SR, LENGTH, SR});
+			myEngine.updateMvMatrix();
+			cube->draw();
+		}
+		myEngine.mvMatrixStack.popMatrix();
+	}
 	myEngine.updateMvMatrix();
 }
 
@@ -136,6 +158,30 @@ void drawCompleteRail()
 		myEngine.mvMatrixStack.addTranslation(STP3D::Vector3D{4, 0, 0});
 		myEngine.updateMvMatrix();
 		drawOneRail();
+	}
+	myEngine.mvMatrixStack.popMatrix();
+}
+
+void drawCompleteCurvedRail()
+{
+	for (int i = 1; i < 6; i+=2)
+	{
+		myEngine.mvMatrixStack.pushMatrix();
+		{
+			myEngine.mvMatrixStack.addRotation(M_PI *i / 12, STP3D::Vector3D{0, 0, 1});
+			myEngine.mvMatrixStack.addTranslation(STP3D::Vector3D{-5, 0, 0});
+			myEngine.updateMvMatrix();
+			drawBallast();
+		}
+		myEngine.mvMatrixStack.popMatrix();
+	}
+
+	myEngine.mvMatrixStack.pushMatrix();
+	{
+		myEngine.mvMatrixStack.addTranslation(STP3D::Vector3D{0, 0, 1.f}); // translate on the z axis to make the rails on top of the ballast
+		myEngine.updateMvMatrix();
+		drawOneCurvedRail(10, 3);
+		drawOneCurvedRail(20, 7);
 	}
 	myEngine.mvMatrixStack.popMatrix();
 }
@@ -226,5 +272,9 @@ void drawArm()
 void drawScene(double time_ellapsed)
 {
 	drawGround();
+	drawCompleteCurvedRail();
+	myEngine.mvMatrixStack.pushMatrix();
+	myEngine.mvMatrixStack.addTranslation(STP3D::Vector3D{-5,5,0});
 	drawCompleteRail();
+	myEngine.mvMatrixStack.popMatrix();
 }
