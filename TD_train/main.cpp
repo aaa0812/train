@@ -95,10 +95,10 @@ int main(int /*argc*/, char ** /*argv*/)
 		return -1;
 
 	/* Try to uncomment this for MAC OS if it did not work */
-	// glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
-	// glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 1);
-	// glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
-	// glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
+	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
+	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 1);
+	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+	glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
 
 	/* Callback to a function if an error is rised by GLFW */
 	glfwSetErrorCallback(onError);
