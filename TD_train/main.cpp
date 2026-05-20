@@ -4,6 +4,7 @@
 #include "draw_scene.hpp"
 #include "tools/shaders.hpp"
 #include <iostream>
+#include "grid.hpp"
 
 using namespace glbasimac;
 using namespace STP3D;
@@ -87,8 +88,17 @@ void onMouseButton(GLFWwindow *window, int button, int action, int /*mods*/)
 	}
 }
 
-int main(int /*argc*/, char ** /*argv*/)
+int main(int argc, char ** argv)
 {
+	const std::string output_path { (argc >= 2) ? argv[1] : "grid.json" };
+	std::ifstream file(output_path);
+    if (!file)
+    {
+        std::cerr << "Unable to open : " << output_path << "\n";
+        return 1;
+    }
+	json data = json::parse(file);
+	
 	/* GLFW initialisation */
 	GLFWwindow *window;
 	if (!glfwInit())

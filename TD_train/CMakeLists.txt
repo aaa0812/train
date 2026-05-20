@@ -11,9 +11,10 @@ foreach(EXE_SRC_FILE ${EXE_SRC_FILES})
 	#    add_executable(${OUTPUT} ${SRC_FILE} ${HEADER_FILES} ${SHADER_FILES})
 	set(SRC_FILES ${EXT_SRC_FILES} ${EXE_SRC_FILE})
 	add_executable(${OUTPUT} ${SRC_FILES} ${HEADER_FILES})
+target_compile_features(${OUTPUT} PRIVATE cxx_std_20)
 	target_link_libraries(${OUTPUT} ${ALL_LIBRARIES})
 	set_target_properties(${OUTPUT} PROPERTIES
-		CXX_STANDARD 11
+		CXX_STANDARD 20
 		CXX_STANDARD_REQUIRED YES
 		CXX_EXTENSIONS NO
 	)
