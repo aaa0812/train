@@ -90,14 +90,17 @@ void onMouseButton(GLFWwindow *window, int button, int action, int /*mods*/)
 
 int main(int argc, char ** argv)
 {
-	const std::string output_path { (argc >= 2) ? argv[1] : "grid.json" };
-	std::ifstream file(output_path);
+	const std::string path { (argc >= 2) ? argv[1] : "grid.json" };
+	std::ifstream file(path);
     if (!file)
     {
-        std::cerr << "Unable to open : " << output_path << "\n";
+        std::cerr << "Unable to open : " << path << "\n";
         return 1;
     }
-	json data = json::parse(file);
+	nlohmann::json data = nlohmann::json::parse(file);
+
+	const GridConfig gridConfig = data.get<GridConfig>();
+	std::cout <<gridConfig.size_grid << std::endl;
 	
 	/* GLFW initialisation */
 	GLFWwindow *window;
@@ -144,7 +147,7 @@ int main(int argc, char ** argv)
 	onWindowResized(window, WINDOW_WIDTH, WINDOW_HEIGHT);
 	CHECK_GL;
 
-	initScene();
+	initScene(gridConfig);
 	double elapsedTime{0.0};
 
 	/* Loop until the user closes the window */

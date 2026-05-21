@@ -2,7 +2,6 @@
 
 #include "nlohmann/json.hpp"
 #include <fstream>
-using json = nlohmann::json;
 
 struct Position
 {
