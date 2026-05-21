@@ -4,6 +4,7 @@
 #include "glbasimac/glbi_set_of_points.hpp"
 #include "glbasimac/glbi_convex_2D_shape.hpp"
 #include "tools/basic_mesh.hpp"
+#include "grid.hpp"
 
 using namespace glbasimac;
 
@@ -19,7 +20,7 @@ extern bool flag_anim_rot_arm;
 /* OpenGL Engine */
 extern GLBI_Engine myEngine;
 
-void initScene();
+void initScene(GridConfig const& gridConfig);
 
 void drawGround(bool displayGrid = false);
 
@@ -29,7 +30,7 @@ void drawOneCurvedRail(int maxIteration = 10, float position = 3);
 
 void drawBallast();
 
-void drawCompleteRail();
+void drawCompleteRail(int posX, int posY);
 
 void drawCompleteCurvedRail();
 

@@ -7,6 +7,8 @@ float dist_zoom{30.0};	 // Distance between origin and viewpoint
 bool flag_anim_rot_scale{false};
 bool flag_anim_rot_arm{false};
 
+GridConfig config;
+
 GLBI_Engine myEngine;
 GLBI_Set_Of_Points somePoints(3);
 GLBI_Convex_2D_Shape ground{3};
@@ -18,8 +20,9 @@ IndexedMesh *cube;
 IndexedMesh *cylinder;
 GLBI_Convex_2D_Shape disk;
 
-void initScene()
+void initScene(GridConfig const& gridConfig)
 {
+	config = gridConfig;
 	float r = 1.f;
 	std::vector<float> points{0.0, 0.0, 0.0, 0.0, 0.0, 10.0, 0.0, 0.0, 0.0, 0.0, 10.0, 0.0, 0.0, 0.0, 0.0, 10.0, 0.0, 0.0};
 	std::vector<float> colors{0.0, 0.0, 1.0, 0.0, 0.0, 1.0, 0.0, 1.0, 0.0, 0.0, 1.0, 0.0, 1.0, 0.0, 0.0, 1.0, 0.0, 0.0};
@@ -69,10 +72,10 @@ void drawGround(bool displayGrid)
 	myEngine.mvMatrixStack.pushMatrix();
 	{
 		myEngine.mvMatrixStack.addHomothety(10);
-		myEngine.mvMatrixStack.addTranslation(STP3D::Vector3D{-5, -5, 0});
-		for (int i = 0; i < 10; i++)
+		myEngine.mvMatrixStack.addTranslation(STP3D::Vector3D{-config.size_grid/2, -config.size_grid/2, 0}); //to center the ground
+		for (int i = 0; i < config.size_grid; i++)
 		{
-			for (int j = 0; j < 10; j++)
+			for (int j = 0; j < config.size_grid; j++)
 			{
 				myEngine.mvMatrixStack.pushMatrix();
 				{
@@ -149,10 +152,11 @@ void drawBallast()
 	myEngine.mvMatrixStack.popMatrix();
 }
 
-void drawCompleteRail()
+void drawCompleteRail(int posX, int posY)
 {
 	myEngine.mvMatrixStack.pushMatrix();
-	myEngine.mvMatrixStack.addTranslation(STP3D::Vector3D{-5, 5, 0});
+	myEngine.mvMatrixStack.addTranslation(STP3D::Vector3D{-5, 5, 0}); //center rail on grid cell
+	myEngine.mvMatrixStack.addTranslation(STP3D::Vector3D{10*posX, 10*posY, 0});
 	myEngine.mvMatrixStack.pushMatrix();
 	{
 		myEngine.mvMatrixStack.addTranslation(STP3D::Vector3D{0, -6, 0});
@@ -235,6 +239,10 @@ void drawScene(double time_ellapsed, bool displayGrid)
 {
 	drawGround(displayGrid);
 	drawCompleteCurvedRail();
+	for (Position const&pos : config.path)
+	{
+		drawCompleteRail(pos.x, pos.y);
+	}
+	
 
-	drawCompleteRail();
 }
