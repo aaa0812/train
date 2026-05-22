@@ -32,7 +32,7 @@ void drawBallast();
 
 void drawCompleteRail(int posX, int posY);
 
-void drawCompleteCurvedRail();
+void drawCompleteCurvedRail(int posX, int posY);
 
 void drawFrame();
 

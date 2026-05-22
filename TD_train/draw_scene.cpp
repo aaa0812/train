@@ -20,7 +20,7 @@ IndexedMesh *cube;
 IndexedMesh *cylinder;
 GLBI_Convex_2D_Shape disk;
 
-void initScene(GridConfig const& gridConfig)
+void initScene(GridConfig const &gridConfig)
 {
 	config = gridConfig;
 	float r = 1.f;
@@ -32,15 +32,15 @@ void initScene(GridConfig const& gridConfig)
 	somePoints.initSet(points, colors);
 
 	std::vector<float> groundSquare{-1.0, -1.0, 0.0,
-							  1.0, -1.0, 0.0,
-							  1.0, 1.0, 0.0,
-							  -1.0, 1.0, 0.0};
+									1.0, -1.0, 0.0,
+									1.0, 1.0, 0.0,
+									-1.0, 1.0, 0.0};
 	std::vector<float> gridSquare{-1.0, -1.0, 0.0,
-							  1.0, -1.0, 0.0,
-							  1.0, -1.0, 0.0,
-							  1.0, 1.0, 0.0,
-							  1.0, 1.0, 0.0,
-							  -1.0, 1.0, 0.0};
+								  1.0, -1.0, 0.0,
+								  1.0, -1.0, 0.0,
+								  1.0, 1.0, 0.0,
+								  1.0, 1.0, 0.0,
+								  -1.0, 1.0, 0.0};
 
 	for (int i = 0; i <= 100; i++)
 	{
@@ -72,10 +72,10 @@ void drawGround(bool displayGrid)
 	myEngine.mvMatrixStack.pushMatrix();
 	{
 		myEngine.mvMatrixStack.addHomothety(10);
-		myEngine.mvMatrixStack.addTranslation(STP3D::Vector3D{-config.size_grid/2, -config.size_grid/2, 0}); //to center the ground
-		for (int i = 0; i < config.size_grid; i++)
+		myEngine.mvMatrixStack.addTranslation(STP3D::Vector3D{-config.size_grid / 2, -config.size_grid / 2, 0}); // to center the ground
+		for (int i = 1; i < config.size_grid; i++)
 		{
-			for (int j = 0; j < config.size_grid; j++)
+			for (int j = 1; j < config.size_grid; j++)
 			{
 				myEngine.mvMatrixStack.pushMatrix();
 				{
@@ -124,7 +124,7 @@ void drawOneCurvedRail(int maxIteration /*default = 10*/, float position /*defau
 		myEngine.mvMatrixStack.pushMatrix();
 		{
 			myEngine.mvMatrixStack.addRotation(-M_PI / 2 * i / maxIteration, STP3D::Vector3D{0, 0, 1});
-			myEngine.mvMatrixStack.addTranslation(STP3D::Vector3D{0, -position, 0});
+			myEngine.mvMatrixStack.addTranslation(STP3D::Vector3D{0, position, 0});
 			myEngine.mvMatrixStack.addHomothety(STP3D::Vector3D{SR, LENGTH, SR});
 			myEngine.updateMvMatrix();
 			cube->draw();
@@ -155,8 +155,8 @@ void drawBallast()
 void drawCompleteRail(int posX, int posY)
 {
 	myEngine.mvMatrixStack.pushMatrix();
-	myEngine.mvMatrixStack.addTranslation(STP3D::Vector3D{-5, 5, 0}); //center rail on grid cell
-	myEngine.mvMatrixStack.addTranslation(STP3D::Vector3D{10*posX, 10*posY, 0});
+	myEngine.mvMatrixStack.addTranslation(STP3D::Vector3D{5, 5, 0}); // center rail on grid cell
+	myEngine.mvMatrixStack.addTranslation(STP3D::Vector3D{10 * posX, 10 * posY, 0});
 	myEngine.mvMatrixStack.pushMatrix();
 	{
 		myEngine.mvMatrixStack.addTranslation(STP3D::Vector3D{0, -6, 0});
@@ -182,13 +182,15 @@ void drawCompleteRail(int posX, int posY)
 	myEngine.mvMatrixStack.popMatrix();
 }
 
-void drawCompleteCurvedRail()
+void drawCompleteCurvedRail(int posX, int posY)
 {
+	myEngine.mvMatrixStack.pushMatrix();
+	myEngine.mvMatrixStack.addTranslation(STP3D::Vector3D{10 * posX, 10 * posY, 0});
 	for (int i = 1; i < 6; i += 2)
 	{
 		myEngine.mvMatrixStack.pushMatrix();
 		{
-			myEngine.mvMatrixStack.addRotation(M_PI * i / 12, STP3D::Vector3D{0, 0, 1});
+			myEngine.mvMatrixStack.addRotation(-M_PI + (M_PI * i / 12), STP3D::Vector3D{0, 0, 1});
 			myEngine.mvMatrixStack.addTranslation(STP3D::Vector3D{-5, 0, 0});
 			myEngine.updateMvMatrix();
 			drawBallast();
@@ -203,6 +205,7 @@ void drawCompleteCurvedRail()
 		drawOneCurvedRail(10, 3);
 		drawOneCurvedRail(20, 7);
 	}
+	myEngine.mvMatrixStack.popMatrix();
 	myEngine.mvMatrixStack.popMatrix();
 }
 
@@ -237,12 +240,20 @@ void rotateSphere(double time_ellapsed, float radius, STP3D::Vector3D /* origin_
 
 void drawScene(double time_ellapsed, bool displayGrid)
 {
+	drawFrame();
 	drawGround(displayGrid);
-	drawCompleteCurvedRail();
-	for (Position const&pos : config.path)
+	for (int i = 0; i < config.path.size(); i++)
 	{
-		drawCompleteRail(pos.x, pos.y);
-	}
-	
+		Position prev = i - 1 >= 0 ? config.path[i-1] : config.path[config.path.size() - 1]; //position of the previous rail : if it exists -> previous pos in the list , else -> last item of the list
+		Position next = i + 1 < config.path.size() ? config.path[i+1] : config.path[0]; //position of the next rail : if it exists -> next pos in the list , else -> first item of the list
 
+		if(prev.x != next.x && prev.y != next.y) //check for a turn
+		{
+			drawCompleteCurvedRail(config.path[i].x, config.path[i].y);
+		}
+		else
+		{
+			drawCompleteRail(config.path[i].x, config.path[i].y);
+		}
+	}
 }
