@@ -244,16 +244,27 @@ void drawScene(double time_ellapsed, bool displayGrid)
 	drawGround(displayGrid);
 	for (int i = 0; i < config.path.size(); i++)
 	{
-		Position prev = i - 1 >= 0 ? config.path[i-1] : config.path[config.path.size() - 1]; //position of the previous rail : if it exists -> previous pos in the list , else -> last item of the list
-		Position next = i + 1 < config.path.size() ? config.path[i+1] : config.path[0]; //position of the next rail : if it exists -> next pos in the list , else -> first item of the list
-
-		if(prev.x != next.x && prev.y != next.y) //check for a turn
+		Position prev = i - 1 >= 0 ? config.path[i - 1] : config.path[config.path.size() - 1]; // position of the previous rail : if it exists -> previous pos in the list , else -> last item of the list
+		Position next = i + 1 < config.path.size() ? config.path[i + 1] : config.path[0];	   // position of the next rail : if it exists -> next pos in the list , else -> first item of the list
+		
+		if (prev.x != next.x && prev.y != next.y) // check for a turn
 		{
 			drawCompleteCurvedRail(config.path[i].x, config.path[i].y);
 		}
 		else
 		{
-			drawCompleteRail(config.path[i].x, config.path[i].y);
+			if (next.y != config.path[i].y)
+			{
+				drawCompleteRail(config.path[i].x, config.path[i].y);
+			}
+			else // next.x != current x
+			{
+				myEngine.mvMatrixStack.pushMatrix();
+				myEngine.mvMatrixStack.addRotation(-M_PI/2, STP3D::Vector3D{0, 0, 1});
+				myEngine.updateMvMatrix();
+				drawCompleteRail(config.path[i].x, config.path[i].y);
+				myEngine.mvMatrixStack.popMatrix();
+			}
 		}
 	}
 }
