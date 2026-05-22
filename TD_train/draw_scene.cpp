@@ -152,11 +152,12 @@ void drawBallast()
 	myEngine.mvMatrixStack.popMatrix();
 }
 
-void drawCompleteRail(int posX, int posY)
+void drawCompleteRail(int posX, int posY, float rotation)
 {
 	myEngine.mvMatrixStack.pushMatrix();
 	myEngine.mvMatrixStack.addTranslation(STP3D::Vector3D{5, 5, 0}); // center rail on grid cell
 	myEngine.mvMatrixStack.addTranslation(STP3D::Vector3D{10 * posX, 10 * posY, 0});
+	myEngine.mvMatrixStack.addRotation(rotation, STP3D::Vector3D{0, 0, 1});
 	myEngine.mvMatrixStack.pushMatrix();
 	{
 		myEngine.mvMatrixStack.addTranslation(STP3D::Vector3D{0, -6, 0});
@@ -255,15 +256,11 @@ void drawScene(double time_ellapsed, bool displayGrid)
 		{
 			if (next.y != config.path[i].y)
 			{
-				drawCompleteRail(config.path[i].x, config.path[i].y);
+				drawCompleteRail(config.path[i].x, config.path[i].y, 0.f);
 			}
 			else // next.x != current x
 			{
-				myEngine.mvMatrixStack.pushMatrix();
-				myEngine.mvMatrixStack.addRotation(-M_PI/2, STP3D::Vector3D{0, 0, 1});
-				myEngine.updateMvMatrix();
-				drawCompleteRail(config.path[i].x, config.path[i].y);
-				myEngine.mvMatrixStack.popMatrix();
+				drawCompleteRail(config.path[i].x, config.path[i].y, -M_PI/2);
 			}
 		}
 	}

@@ -30,7 +30,7 @@ void drawOneCurvedRail(int maxIteration = 10, float position = 3);
 
 void drawBallast();
 
-void drawCompleteRail(int posX, int posY);
+void drawCompleteRail(int posX, int posY, float rotation);
 
 void drawCompleteCurvedRail(int posX, int posY);
 
