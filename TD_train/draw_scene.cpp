@@ -183,10 +183,12 @@ void drawCompleteRail(int posX, int posY, float rotation)
 	myEngine.mvMatrixStack.popMatrix();
 }
 
-void drawCompleteCurvedRail(int posX, int posY)
+void drawCompleteCurvedRail(int posX, int posY, float rotation, STP3D::Vector3D offset)
 {
 	myEngine.mvMatrixStack.pushMatrix();
 	myEngine.mvMatrixStack.addTranslation(STP3D::Vector3D{10 * posX, 10 * posY, 0});
+	myEngine.mvMatrixStack.addRotation(rotation, STP3D::Vector3D{0, 0, 1});
+	myEngine.mvMatrixStack.addTranslation(offset); //need an offset to keep the rail in the right grid cell
 	for (int i = 1; i < 6; i += 2)
 	{
 		myEngine.mvMatrixStack.pushMatrix();
@@ -247,21 +249,59 @@ void drawScene(double time_ellapsed, bool displayGrid)
 	{
 		Position prev = i - 1 >= 0 ? config.path[i - 1] : config.path[config.path.size() - 1]; // position of the previous rail : if it exists -> previous pos in the list , else -> last item of the list
 		Position next = i + 1 < config.path.size() ? config.path[i + 1] : config.path[0];	   // position of the next rail : if it exists -> next pos in the list , else -> first item of the list
-		
+
 		if (prev.x != next.x && prev.y != next.y) // check for a turn
 		{
-			drawCompleteCurvedRail(config.path[i].x, config.path[i].y);
+			Orientation curve = defineCurveDir(prev, {config.path[i].x, config.path[i].y}, next);
+			switch (curve)
+			{
+			case BottomRight:
+				drawCompleteCurvedRail(config.path[i].x, config.path[i].y, -M_PI / 2, STP3D::Vector3D{-10, 0, 0});
+				break;
+			case BottomLeft:
+				drawCompleteCurvedRail(config.path[i].x, config.path[i].y, M_PI, STP3D::Vector3D{-10, -10, 0});
+				break;
+			case TopRight:
+				drawCompleteCurvedRail(config.path[i].x, config.path[i].y, 0);
+				break;
+			case TopLeft:
+				drawCompleteCurvedRail(config.path[i].x, config.path[i].y, M_PI / 2, STP3D::Vector3D{0, -10, 0});
+				break;
+
+			default:
+				break;
+			}
 		}
 		else
 		{
-			if (next.y != config.path[i].y)
+			if (next.y != config.path[i].y) // vertical rail
 			{
 				drawCompleteRail(config.path[i].x, config.path[i].y, 0.f);
 			}
-			else // next.x != current x
+			else // next.x != current x : horizontal rail
 			{
-				drawCompleteRail(config.path[i].x, config.path[i].y, -M_PI/2);
+				drawCompleteRail(config.path[i].x, config.path[i].y, -M_PI / 2);
 			}
 		}
+	}
+}
+
+Orientation defineCurveDir(Position prev, Position current, Position next)
+{
+	if ((next.y > current.y && prev.x < current.x) || (next.x < current.x && prev.y > current.y))
+	{
+		return BottomRight;
+	}
+	if ((next.x > current.x && prev.y > current.y) || (next.y > current.y && prev.x > current.x))
+	{
+		return BottomLeft;
+	}
+	if ((next.x < current.x && prev.y < current.y) || (next.y < current.y && prev.x < current.x))
+	{
+		return TopRight;
+	}
+	if ((next.y < current.y && prev.x > current.x) || (next.x > current.x && prev.y < current.y))
+	{
+		return TopLeft;
 	}
 }

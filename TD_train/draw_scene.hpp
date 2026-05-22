@@ -20,7 +20,15 @@ extern bool flag_anim_rot_arm;
 /* OpenGL Engine */
 extern GLBI_Engine myEngine;
 
-void initScene(GridConfig const& gridConfig);
+enum Orientation
+{
+    BottomRight,
+    BottomLeft,
+    TopRight,
+    TopLeft,
+};
+
+void initScene(GridConfig const &gridConfig);
 
 void drawGround(bool displayGrid = false);
 
@@ -32,7 +40,7 @@ void drawBallast();
 
 void drawCompleteRail(int posX, int posY, float rotation);
 
-void drawCompleteCurvedRail(int posX, int posY);
+void drawCompleteCurvedRail(int posX, int posY, float rotation, STP3D::Vector3D offset = {0.f, 0.f, 0.f});
 
 void drawFrame();
 
@@ -41,3 +49,5 @@ void drawSphere(double time_ellapsed);
 void rotateSphere(double time_ellapsed, float radius, STP3D::Vector3D origin_point = {0.0, 0.0, 0.0});
 
 void drawScene(double time_ellapsed, bool displayGrid = false);
+
+Orientation defineCurveDir(Position prev, Position current, Position next);
