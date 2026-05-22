@@ -188,7 +188,7 @@ void drawCompleteCurvedRail(int posX, int posY, float rotation, STP3D::Vector3D 
 	myEngine.mvMatrixStack.pushMatrix();
 	myEngine.mvMatrixStack.addTranslation(STP3D::Vector3D{10 * posX, 10 * posY, 0});
 	myEngine.mvMatrixStack.addRotation(rotation, STP3D::Vector3D{0, 0, 1});
-	myEngine.mvMatrixStack.addTranslation(offset); //need an offset to keep the rail in the right grid cell
+	myEngine.mvMatrixStack.addTranslation(offset); // need an offset to keep the rail in the right grid cell
 	for (int i = 1; i < 6; i += 2)
 	{
 		myEngine.mvMatrixStack.pushMatrix();
@@ -241,10 +241,8 @@ void rotateSphere(double time_ellapsed, float radius, STP3D::Vector3D /* origin_
 	myEngine.updateMvMatrix();
 }
 
-void drawScene(double time_ellapsed, bool displayGrid)
+void drawRailRoad()
 {
-	drawFrame();
-	drawGround(displayGrid);
 	for (int i = 0; i < config.path.size(); i++)
 	{
 		Position prev = i - 1 >= 0 ? config.path[i - 1] : config.path[config.path.size() - 1]; // position of the previous rail : if it exists -> previous pos in the list , else -> last item of the list
@@ -284,6 +282,13 @@ void drawScene(double time_ellapsed, bool displayGrid)
 			}
 		}
 	}
+}
+
+void drawScene(double time_ellapsed, bool displayGrid)
+{
+	drawFrame();
+	drawGround(displayGrid);
+	drawRailRoad();
 }
 
 Orientation defineCurveDir(Position prev, Position current, Position next)

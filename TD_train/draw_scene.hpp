@@ -48,6 +48,8 @@ void drawSphere(double time_ellapsed);
 
 void rotateSphere(double time_ellapsed, float radius, STP3D::Vector3D origin_point = {0.0, 0.0, 0.0});
 
+void drawRailRoad();
+
 void drawScene(double time_ellapsed, bool displayGrid = false);
 
 Orientation defineCurveDir(Position prev, Position current, Position next);
