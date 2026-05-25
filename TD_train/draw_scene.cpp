@@ -31,16 +31,18 @@ void initScene(GridConfig const &gridConfig)
 
 	somePoints.initSet(points, colors);
 
-	std::vector<float> groundSquare{-1.0, -1.0, 0.0,
-									1.0, -1.0, 0.0,
-									1.0, 1.0, 0.0,
-									-1.0, 1.0, 0.0};
-	std::vector<float> gridSquare{-1.0, -1.0, 0.0,
-								  1.0, -1.0, 0.0,
-								  1.0, -1.0, 0.0,
-								  1.0, 1.0, 0.0,
-								  1.0, 1.0, 0.0,
-								  -1.0, 1.0, 0.0};
+	std::vector<float> groundSquare{0, 0, 0.0,
+									1, 0, 0.0,
+									1, 1, 0.0,
+									0, 1, 0.0};
+	std::vector<float> gridSquare{0, 0, 0.0,
+								  1, 0, 0.0,
+								  1, 0, 0.0,
+								  1, 1, 0.0,
+								  1, 1, 0.0,
+								  0, 1, 0.0};
+
+	std::vector<float> trapezoidPoints{};
 
 	for (int i = 0; i <= 100; i++)
 	{
@@ -73,9 +75,9 @@ void drawGround(bool displayGrid)
 	{
 		myEngine.mvMatrixStack.addHomothety(10);
 		myEngine.mvMatrixStack.addTranslation(STP3D::Vector3D{-config.size_grid / 2, -config.size_grid / 2, 0}); // to center the ground
-		for (int i = 1; i < config.size_grid; i++)
+		for (int i = 0; i < config.size_grid; i++)
 		{
-			for (int j = 1; j < config.size_grid; j++)
+			for (int j = 0; j < config.size_grid; j++)
 			{
 				myEngine.mvMatrixStack.pushMatrix();
 				{
