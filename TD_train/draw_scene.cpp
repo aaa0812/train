@@ -46,36 +46,18 @@ void initScene(GridConfig const &gridConfig)
 								  0, 1, 0.0};
 
 	std::vector<float> trapezoidPoints{
-		-0.3, -0.3, 0.0,
-		0.3, -0.3, 0.0,
-		0.3, -0.3, 0.0,
-		0.3, 0.3, 0.0,
-		0.3, 0.3, 0.0,
-		-0.3, 0.3, 0.0,
-		-0.3, 0.3, 0.0,
-		-0.3, -0.3, 0.0,
-		//-0.3, -0.3, 0.0,
-		-0.5, -0.5, 3.0,
-		//-0.5, -0.5, 3.0,
-		0.5, -0.5, 3.0,
-		//0.5, -0.5, 3.0,
-		0.3, -0.3, 0.0,
-		//0.3, -0.3, 0.0,
-		0.5, -0.5, 3.0,
-		//0.5, -0.5, 3.0,
-		0.5, 0.5, 3.0,
-		//0.5, 0.5, 3.0,
-		0.3, 0.3, 0.0,
-		//0.3, 0.3, 0.0,
-		0.5, 0.5, 3.0,
-		//0.5, 0.5, 3.0,
-		-0.5, 0.5, 3.0,
-		//-0.5, 0.5, 3.0,
-		-0.3, 0.3, 0.0,
-		//-0.3, 0.3, 0.0,
-		-0.5, 0.5, 3.0,
-		//-0.5, 0.5, 3.0,
-		//-0.5, -0.5, 3.0,
+		-0.3,
+		-0.3,
+		0.0,
+		-0.5,
+		-0.5,
+		1.0,
+		0.5,
+		-0.5,
+		1.0,
+		0.3,
+		-0.3,
+		0.0,
 	};
 
 	for (int i = 0; i <= 100; i++)
@@ -324,22 +306,73 @@ void drawRailRoad()
 	}
 }
 
+void drawTrapezoid()
+{
+	myEngine.mvMatrixStack.pushMatrix();
+	{
+		for (int i = 0; i < 4; i++)
+		{
+			myEngine.mvMatrixStack.addRotation(M_PI / 2, STP3D::Vector3D(0, 0, 1));
+			myEngine.updateMvMatrix();
+			trapezoid.drawShape();
+		}
+	}
+	myEngine.mvMatrixStack.popMatrix();
+}
+
 void drawLantern(int posX, int posY)
 {
 	const float BaseSize = 2.f;
+	const float LightHeight = 2.f;
 	const float TopSize = 3.f;
 	const float WEIGTH = 0.5f; // base and top weight
 
+	myEngine.setFlatColor(0.3, 0.3, 0.3);
+
 	myEngine.mvMatrixStack.pushMatrix();
 	{
-		myEngine.mvMatrixStack.addTranslation(STP3D::Vector3D{posX * CELLSIZE + CELLSIZE / 2, posY * CELLSIZE + CELLSIZE / 2, 0}); // place the object on the cell center
+		myEngine.mvMatrixStack.addTranslation(STP3D::Vector3D{posX * CELLSIZE + CELLSIZE / 2, posY * CELLSIZE + CELLSIZE / 2, WEIGTH / 2}); // place the object on the cell center
 		myEngine.mvMatrixStack.pushMatrix();
 		{
-			myEngine.mvMatrixStack.addHomothety(STP3D::Vector3D{BaseSize, BaseSize, WEIGTH});
-			myEngine.updateMvMatrix();
-			//cube->draw();
-			myEngine.setFlatColor(0, 0, 1);
-			trapezoid.drawShape();
+			myEngine.mvMatrixStack.addHomothety(STP3D::Vector3D{BaseSize, BaseSize, 1});
+
+			myEngine.mvMatrixStack.pushMatrix();
+			{
+				myEngine.mvMatrixStack.addHomothety(STP3D::Vector3D{1, 1, WEIGTH});
+				myEngine.updateMvMatrix();
+				cube->draw();
+			}
+			myEngine.mvMatrixStack.popMatrix();
+
+			myEngine.mvMatrixStack.addTranslation(STP3D::Vector3D{0, 0, WEIGTH / 2});
+			myEngine.mvMatrixStack.pushMatrix();
+			{
+				myEngine.setFlatColor(0.6, 0.4, 0.0);
+				myEngine.mvMatrixStack.addHomothety(STP3D::Vector3D{1, 1, LightHeight});
+				myEngine.updateMvMatrix();
+				drawTrapezoid();
+			}
+			myEngine.mvMatrixStack.popMatrix();
+
+			myEngine.mvMatrixStack.addTranslation(STP3D::Vector3D{0, 0, LightHeight + WEIGTH / 2});
+			myEngine.mvMatrixStack.pushMatrix();
+			{
+				myEngine.setFlatColor(0.3, 0.3, 0.3);
+				myEngine.mvMatrixStack.addHomothety(STP3D::Vector3D{1.2, 1.2, WEIGTH});
+				myEngine.updateMvMatrix();
+				cube->draw();
+			}
+			myEngine.mvMatrixStack.popMatrix();
+
+			myEngine.mvMatrixStack.addTranslation(STP3D::Vector3D{0, 0, WEIGTH / 2});
+			myEngine.mvMatrixStack.pushMatrix();
+			{
+				myEngine.mvMatrixStack.addTranslation(STP3D::Vector3D{0, 0, 1});
+				myEngine.mvMatrixStack.addRotation(M_PI, STP3D::Vector3D{0, 1, 0});
+				myEngine.updateMvMatrix();
+				drawTrapezoid();
+			}
+			myEngine.mvMatrixStack.popMatrix();
 		}
 		myEngine.mvMatrixStack.popMatrix();
 	}
