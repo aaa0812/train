@@ -320,7 +320,7 @@ void drawTrapezoid()
 	myEngine.mvMatrixStack.popMatrix();
 }
 
-void drawLantern(int posX, int posY)
+void drawLantern(int posX, int posY, float scale)
 {
 	const float BaseSize = 2.f;
 	const float LightHeight = 2.f;
@@ -332,6 +332,7 @@ void drawLantern(int posX, int posY)
 	myEngine.mvMatrixStack.pushMatrix();
 	{
 		myEngine.mvMatrixStack.addTranslation(STP3D::Vector3D{posX * CELLSIZE + CELLSIZE / 2, posY * CELLSIZE + CELLSIZE / 2, WEIGTH / 2}); // place the object on the cell center
+		myEngine.mvMatrixStack.addHomothety(scale);
 		myEngine.mvMatrixStack.pushMatrix();
 		{
 			myEngine.mvMatrixStack.addHomothety(STP3D::Vector3D{BaseSize, BaseSize, 1});
@@ -347,7 +348,7 @@ void drawLantern(int posX, int posY)
 			myEngine.mvMatrixStack.addTranslation(STP3D::Vector3D{0, 0, WEIGTH / 2});
 			myEngine.mvMatrixStack.pushMatrix();
 			{
-				myEngine.setFlatColor(0.6, 0.4, 0.0);
+				myEngine.setFlatColor(0.6, 0.5, 0.0);
 				myEngine.mvMatrixStack.addHomothety(STP3D::Vector3D{1, 1, LightHeight});
 				myEngine.updateMvMatrix();
 				drawTrapezoid();
@@ -419,6 +420,24 @@ void drawCompleteLantern(int posX, int posY)
 			cube->draw();
 		}
 		myEngine.mvMatrixStack.popMatrix();
+
+		myEngine.mvMatrixStack.pushMatrix(); // light
+		{
+			myEngine.setFlatColor(0.6, 0.5, 0.4);
+			myEngine.mvMatrixStack.addTranslation(STP3D::Vector3D{0, BeamLenght * 0.75, HEIGHT - 3});
+			myEngine.mvMatrixStack.addRotation(M_PI / 2, STP3D::Vector3D{1, 0, 0});
+			myEngine.mvMatrixStack.addHomothety(STP3D::Vector3D{0.1, 3, 0.1});
+			myEngine.updateMvMatrix();
+			cylinder->draw();
+		}
+		myEngine.mvMatrixStack.popMatrix();
+	}
+	myEngine.mvMatrixStack.popMatrix();
+
+	myEngine.mvMatrixStack.pushMatrix();
+	{
+		myEngine.mvMatrixStack.addTranslation(STP3D::Vector3D{0, BeamLenght * 0.75, HEIGHT - 5});
+		drawLantern(posX, posY, 0.75);
 	}
 	myEngine.mvMatrixStack.popMatrix();
 }
@@ -428,8 +447,9 @@ void drawScene(double time_ellapsed, bool displayGrid)
 	drawFrame();
 	drawGround(displayGrid);
 	drawRailRoad();
-	// drawCompleteLantern(1, 1);
-	drawLantern(1, 1);
+	drawCompleteLantern(1, 0);
+	drawLantern(1, -3);
+	drawLantern(-3, -3);
 }
 
 Orientation defineCurveDir(Position prev, Position current, Position next)

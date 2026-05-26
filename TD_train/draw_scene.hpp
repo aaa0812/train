@@ -52,7 +52,7 @@ void drawRailRoad();
 
 void drawTrapezoid();
 
-void drawLantern(int posX, int posY);
+void drawLantern(int posX, int posY, float scale = 1.f);
 
 void drawCompleteLantern(int posX, int posY);
 
