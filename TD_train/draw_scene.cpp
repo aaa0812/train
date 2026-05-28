@@ -286,11 +286,29 @@ void drawRailRoad()
 	}
 }
 
+void drawTrain()
+{
+	const float SR = 6.f; // rail weight and heigth
+	const int LENGTH = 9;
+	myEngine.setFlatColor(1.f, 0.f, 0.f);
+
+	myEngine.mvMatrixStack.pushMatrix();
+	{
+		myEngine.mvMatrixStack.addHomothety(STP3D::Vector3D{SR, LENGTH, SR});
+		myEngine.updateMvMatrix();
+		cube->draw();
+	}
+	myEngine.mvMatrixStack.popMatrix();
+	myEngine.updateMvMatrix();
+}
+
+
 void drawScene(double time_ellapsed, bool displayGrid)
 {
 	drawFrame();
 	drawGround(displayGrid);
 	drawRailRoad();
+	drawTrain();
 }
 
 Orientation defineCurveDir(Position prev, Position current, Position next)
@@ -312,3 +330,4 @@ Orientation defineCurveDir(Position prev, Position current, Position next)
 		return TopLeft;
 	}
 }
+
