@@ -374,12 +374,16 @@ void drawTrain()
 		myEngine.updateMvMatrix();
 		cube->draw();
 	}
+	myEngine.mvMatrixStack.popMatrix();
 
-	
-	
-
-
-
+	myEngine.mvMatrixStack.pushMatrix();
+	{
+		myEngine.setFlatColor(0.6f, 0.6f, 0.6f);
+		myEngine.mvMatrixStack.addHomothety(STP3D::Vector3D{SR +0.5f, LENGTH +0.5f, 0.5f});
+		myEngine.mvMatrixStack.addTranslation(STP3D::Vector3D{0, 0, 4});
+		myEngine.updateMvMatrix();
+		cube->draw();
+	}
 	myEngine.mvMatrixStack.popMatrix();
 
 	myEngine.mvMatrixStack.popMatrix();
