@@ -288,16 +288,31 @@ void drawRailRoad()
 
 void drawTrain()
 {
-	const float SR = 6.f; // rail weight and heigth
-	const int LENGTH = 9;
+	const float SR = 4.f; // rail weight and heigth
+	const float RR = 1.f;
+	const int LENGTH = 7;
 	myEngine.setFlatColor(1.f, 0.f, 0.f);
 
 	myEngine.mvMatrixStack.pushMatrix();
 	{
+		myEngine.mvMatrixStack.addTranslation(STP3D::Vector3D{5, 5, 5});
 		myEngine.mvMatrixStack.addHomothety(STP3D::Vector3D{SR, LENGTH, SR});
 		myEngine.updateMvMatrix();
 		cube->draw();
 	}
+
+	myEngine.mvMatrixStack.pushMatrix();
+	{
+		myEngine.setFlatColor(0.2f, 0.2f, 0.2f);
+		myEngine.mvMatrixStack.addRotation(M_PI / 2, STP3D::Vector3D{0, 0, 1});
+		myEngine.mvMatrixStack.addTranslation(STP3D::Vector3D{0, -RR / 4, -SR / 8 - RR / 8});
+		myEngine.mvMatrixStack.addHomothety(STP3D::Vector3D{RR / 16, SR / 8, RR / 8});
+
+		myEngine.updateMvMatrix();
+		cylinder->draw();
+	}
+
+	myEngine.mvMatrixStack.popMatrix();
 	myEngine.mvMatrixStack.popMatrix();
 	myEngine.updateMvMatrix();
 }
