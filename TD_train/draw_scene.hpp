@@ -51,6 +51,11 @@ void rotateSphere(double time_ellapsed, float radius, STP3D::Vector3D origin_poi
 void drawRailRoad();
 
 void drawTrain();
+void drawTrapezoid();
+
+void drawLantern(int posX, int posY, float scale = 1.f);
+
+void drawCompleteLantern(int posX, int posY);
 
 void drawScene(double time_ellapsed, bool displayGrid = false);
 

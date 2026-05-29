@@ -13,12 +13,15 @@ GLBI_Engine myEngine;
 GLBI_Set_Of_Points somePoints(3);
 GLBI_Convex_2D_Shape ground{3};
 GLBI_Convex_2D_Shape grid{3};
+GLBI_Convex_2D_Shape trapezoid{3};
 
 IndexedMesh *sphere;
 StandardMesh *cone;
 IndexedMesh *cube;
 IndexedMesh *cylinder;
 GLBI_Convex_2D_Shape disk;
+
+const int CELLSIZE = 10.f;
 
 void initScene(GridConfig const &gridConfig)
 {
@@ -42,7 +45,20 @@ void initScene(GridConfig const &gridConfig)
 								  1, 1, 0.0,
 								  0, 1, 0.0};
 
-	std::vector<float> trapezoidPoints{};
+	std::vector<float> trapezoidPoints{
+		-0.3,
+		-0.3,
+		0.0,
+		-0.5,
+		-0.5,
+		1.0,
+		0.5,
+		-0.5,
+		1.0,
+		0.3,
+		-0.3,
+		0.0,
+	};
 
 	for (int i = 0; i <= 100; i++)
 	{
@@ -55,6 +71,10 @@ void initScene(GridConfig const &gridConfig)
 	ground.changeNature(GL_TRIANGLE_FAN);
 	grid.initShape(gridSquare);
 	grid.changeNature(GL_LINES);
+
+	trapezoid.initShape(trapezoidPoints);
+	trapezoid.changeNature(GL_LINES);
+	trapezoid.changeNature(GL_TRIANGLE_FAN);
 
 	sphere = basicSphere(1.0);
 	sphere->createVAO();
@@ -73,7 +93,7 @@ void drawGround(bool displayGrid)
 {
 	myEngine.mvMatrixStack.pushMatrix();
 	{
-		myEngine.mvMatrixStack.addHomothety(10);
+		myEngine.mvMatrixStack.addHomothety(CELLSIZE);
 		myEngine.mvMatrixStack.addTranslation(STP3D::Vector3D{-config.size_grid / 2, -config.size_grid / 2, 0}); // to center the ground
 		for (int i = 0; i < config.size_grid; i++)
 		{
@@ -102,7 +122,7 @@ void drawGround(bool displayGrid)
 void drawOneRail()
 {
 	const float SR = 1.f; // rail weight and heigth
-	const int LENGTH = 10;
+	const int LENGTH = CELLSIZE;
 	myEngine.setFlatColor(0.3, 0.3, 0.3);
 
 	myEngine.mvMatrixStack.pushMatrix();
@@ -158,7 +178,7 @@ void drawCompleteRail(int posX, int posY, float rotation)
 {
 	myEngine.mvMatrixStack.pushMatrix();
 	myEngine.mvMatrixStack.addTranslation(STP3D::Vector3D{5, 5, 0}); // center rail on grid cell
-	myEngine.mvMatrixStack.addTranslation(STP3D::Vector3D{10 * posX, 10 * posY, 0});
+	myEngine.mvMatrixStack.addTranslation(STP3D::Vector3D{CELLSIZE * posX, CELLSIZE * posY, 0});
 	myEngine.mvMatrixStack.addRotation(rotation, STP3D::Vector3D{0, 0, 1});
 	myEngine.mvMatrixStack.pushMatrix();
 	{
@@ -188,7 +208,7 @@ void drawCompleteRail(int posX, int posY, float rotation)
 void drawCompleteCurvedRail(int posX, int posY, float rotation, STP3D::Vector3D offset)
 {
 	myEngine.mvMatrixStack.pushMatrix();
-	myEngine.mvMatrixStack.addTranslation(STP3D::Vector3D{10 * posX, 10 * posY, 0});
+	myEngine.mvMatrixStack.addTranslation(STP3D::Vector3D{CELLSIZE * posX, CELLSIZE * posY, 0});
 	myEngine.mvMatrixStack.addRotation(rotation, STP3D::Vector3D{0, 0, 1});
 	myEngine.mvMatrixStack.addTranslation(offset); // need an offset to keep the rail in the right grid cell
 	for (int i = 1; i < 6; i += 2)
@@ -256,16 +276,16 @@ void drawRailRoad()
 			switch (curve)
 			{
 			case BottomRight:
-				drawCompleteCurvedRail(config.path[i].x, config.path[i].y, -M_PI / 2, STP3D::Vector3D{-10, 0, 0});
+				drawCompleteCurvedRail(config.path[i].x, config.path[i].y, -M_PI / 2, STP3D::Vector3D{-CELLSIZE, 0, 0});
 				break;
 			case BottomLeft:
-				drawCompleteCurvedRail(config.path[i].x, config.path[i].y, M_PI, STP3D::Vector3D{-10, -10, 0});
+				drawCompleteCurvedRail(config.path[i].x, config.path[i].y, M_PI, STP3D::Vector3D{-CELLSIZE, -CELLSIZE, 0});
 				break;
 			case TopRight:
 				drawCompleteCurvedRail(config.path[i].x, config.path[i].y, 0);
 				break;
 			case TopLeft:
-				drawCompleteCurvedRail(config.path[i].x, config.path[i].y, M_PI / 2, STP3D::Vector3D{0, -10, 0});
+				drawCompleteCurvedRail(config.path[i].x, config.path[i].y, M_PI / 2, STP3D::Vector3D{0, -CELLSIZE, 0});
 				break;
 
 			default:
@@ -286,37 +306,223 @@ void drawRailRoad()
 	}
 }
 
-void drawTrain()
+void drawTrainBar()
 {
-	const float SR = 4.f; // rail weight and heigth
+	const float SR = 4.f;
 	const float RR = 1.f;
 	const int LENGTH = 7;
-	myEngine.setFlatColor(1.f, 0.f, 0.f);
+
+	myEngine.setFlatColor(0.25f, 0.25f, 0.25f);
 
 	myEngine.mvMatrixStack.pushMatrix();
-	{
-		myEngine.mvMatrixStack.addTranslation(STP3D::Vector3D{5, 5, 5});
-		myEngine.mvMatrixStack.addHomothety(STP3D::Vector3D{SR, LENGTH, SR});
-		myEngine.updateMvMatrix();
-		cube->draw();
-	}
+	myEngine.mvMatrixStack.addTranslation(STP3D::Vector3D{CELLSIZE / 2, CELLSIZE / 2, 5});
 
-	myEngine.mvMatrixStack.pushMatrix();
+	myEngine.mvMatrixStack.pushMatrix(); // train bar
 	{
 		myEngine.setFlatColor(0.2f, 0.2f, 0.2f);
 		myEngine.mvMatrixStack.addRotation(M_PI / 2, STP3D::Vector3D{0, 0, 1});
-		myEngine.mvMatrixStack.addTranslation(STP3D::Vector3D{0, -RR / 4, -SR / 8 - RR / 8});
-		myEngine.mvMatrixStack.addHomothety(STP3D::Vector3D{RR / 16, SR / 8, RR / 8});
+		myEngine.mvMatrixStack.addTranslation(STP3D::Vector3D{-2.5f,  -(SR /2) -1, - SR / 2});
+		myEngine.mvMatrixStack.addHomothety(STP3D::Vector3D{0.25F, 6, 0.25f});
 
 		myEngine.updateMvMatrix();
 		cylinder->draw();
 	}
 
 	myEngine.mvMatrixStack.popMatrix();
+
+	myEngine.mvMatrixStack.pushMatrix(); // right rear wheel
+	{
+		myEngine.setFlatColor(0.6f, 0.6f, 0.6f);
+		myEngine.mvMatrixStack.addRotation(M_PI / 2, STP3D::Vector3D{0, 0, 1});
+		myEngine.mvMatrixStack.addTranslation(STP3D::Vector3D{-2.5f,  -(SR /2) -0.75f, - SR / 2});
+		myEngine.mvMatrixStack.addHomothety(STP3D::Vector3D{1, 1, 1});
+
+		myEngine.updateMvMatrix();
+		cylinder->draw();
+	}
+
+	myEngine.mvMatrixStack.popMatrix();
+
+	myEngine.mvMatrixStack.pushMatrix(); // left rear wheel
+	{
+		myEngine.setFlatColor(0.6f, 0.6f, 0.6f);
+		myEngine.mvMatrixStack.addRotation(M_PI / 2, STP3D::Vector3D{0, 0, 1});
+		myEngine.mvMatrixStack.addTranslation(STP3D::Vector3D{-2.5f,  +(SR /2) -0.25f, - SR / 2});
+		myEngine.mvMatrixStack.addHomothety(STP3D::Vector3D{1, 1, 1});
+
+		myEngine.updateMvMatrix();
+		cylinder->draw();
+	}
+	myEngine.mvMatrixStack.popMatrix();
+	myEngine.mvMatrixStack.popMatrix();
+
+}
+
+void drawTrain()
+{
+	const float SR = 4.f;
+	const float RR = 1.f;
+	const int LENGTH = 7;
+	myEngine.setFlatColor(0.25f, 0.25f, 0.25f);
+
+	myEngine.mvMatrixStack.pushMatrix();
+	myEngine.mvMatrixStack.addTranslation(STP3D::Vector3D{CELLSIZE / 2, CELLSIZE / 2, 5});
+
+	myEngine.mvMatrixStack.pushMatrix();
+	{
+		myEngine.mvMatrixStack.addHomothety(STP3D::Vector3D{SR, LENGTH, SR});
+		myEngine.updateMvMatrix();
+		cube->draw();
+	}
+
+	
+	
+
+
+
+	myEngine.mvMatrixStack.popMatrix();
+
 	myEngine.mvMatrixStack.popMatrix();
 	myEngine.updateMvMatrix();
 }
 
+
+
+void drawTrapezoid()
+{
+	myEngine.mvMatrixStack.pushMatrix();
+	{
+		for (int i = 0; i < 4; i++)
+		{
+			myEngine.mvMatrixStack.addRotation(M_PI / 2, STP3D::Vector3D(0, 0, 1));
+			myEngine.updateMvMatrix();
+			trapezoid.drawShape();
+		}
+	}
+	myEngine.mvMatrixStack.popMatrix();
+}
+
+void drawLantern(int posX, int posY, float scale)
+{
+	const float BaseSize = 2.f;
+	const float LightHeight = 2.f;
+	const float TopSize = 3.f;
+	const float WEIGTH = 0.5f; // base and top weight
+
+	myEngine.setFlatColor(0.3, 0.3, 0.3);
+
+	myEngine.mvMatrixStack.pushMatrix();
+	{
+		myEngine.mvMatrixStack.addTranslation(STP3D::Vector3D{posX * CELLSIZE + CELLSIZE / 2, posY * CELLSIZE + CELLSIZE / 2, WEIGTH / 2}); // place the object on the cell center
+		myEngine.mvMatrixStack.addHomothety(scale);
+		myEngine.mvMatrixStack.pushMatrix();
+		{
+			myEngine.mvMatrixStack.addHomothety(STP3D::Vector3D{BaseSize, BaseSize, 1});
+
+			myEngine.mvMatrixStack.pushMatrix();
+			{
+				myEngine.mvMatrixStack.addHomothety(STP3D::Vector3D{1, 1, WEIGTH});
+				myEngine.updateMvMatrix();
+				cube->draw();
+			}
+			myEngine.mvMatrixStack.popMatrix();
+
+			myEngine.mvMatrixStack.addTranslation(STP3D::Vector3D{0, 0, WEIGTH / 2});
+			myEngine.mvMatrixStack.pushMatrix();
+			{
+				myEngine.setFlatColor(0.6, 0.5, 0.0);
+				myEngine.mvMatrixStack.addHomothety(STP3D::Vector3D{1, 1, LightHeight});
+				myEngine.updateMvMatrix();
+				drawTrapezoid();
+			}
+			myEngine.mvMatrixStack.popMatrix();
+
+			myEngine.mvMatrixStack.addTranslation(STP3D::Vector3D{0, 0, LightHeight + WEIGTH / 2});
+			myEngine.mvMatrixStack.pushMatrix();
+			{
+				myEngine.setFlatColor(0.3, 0.3, 0.3);
+				myEngine.mvMatrixStack.addHomothety(STP3D::Vector3D{1.2, 1.2, WEIGTH});
+				myEngine.updateMvMatrix();
+				cube->draw();
+			}
+			myEngine.mvMatrixStack.popMatrix();
+
+			myEngine.mvMatrixStack.addTranslation(STP3D::Vector3D{0, 0, WEIGTH / 2});
+			myEngine.mvMatrixStack.pushMatrix();
+			{
+				myEngine.mvMatrixStack.addTranslation(STP3D::Vector3D{0, 0, 1});
+				myEngine.mvMatrixStack.addRotation(M_PI, STP3D::Vector3D{0, 1, 0});
+				myEngine.updateMvMatrix();
+				drawTrapezoid();
+			}
+			myEngine.mvMatrixStack.popMatrix();
+		}
+		myEngine.mvMatrixStack.popMatrix();
+	}
+	myEngine.mvMatrixStack.popMatrix();
+}
+
+void drawCompleteLantern(int posX, int posY)
+{
+	const float WEIGTH = 1.f; // weight
+	const int HEIGHT = 15;
+	const int BeamLenght = HEIGHT / 2.5;
+	const int SupportLenght = HEIGHT / 3;
+	myEngine.setFlatColor(0.5, 0.4, 0.3);
+
+	myEngine.mvMatrixStack.pushMatrix();
+	{
+		myEngine.mvMatrixStack.addTranslation(STP3D::Vector3D{posX * CELLSIZE + CELLSIZE / 2, posY * CELLSIZE + CELLSIZE / 2, 0}); // place the object on the cell center
+		myEngine.mvMatrixStack.pushMatrix();
+		{
+			myEngine.mvMatrixStack.addTranslation(STP3D::Vector3D{0, 0, HEIGHT / 2});
+			myEngine.mvMatrixStack.addHomothety(STP3D::Vector3D{WEIGTH, WEIGTH, HEIGHT});
+			myEngine.updateMvMatrix();
+			cube->draw();
+		}
+		myEngine.mvMatrixStack.popMatrix();
+
+		myEngine.mvMatrixStack.pushMatrix();
+		{
+			myEngine.mvMatrixStack.addTranslation(STP3D::Vector3D{0, 0, HEIGHT}); // position beam at the top
+			myEngine.mvMatrixStack.addRotation(-M_PI / 2, STP3D::Vector3D{1, 0, 0});
+			myEngine.mvMatrixStack.addTranslation(STP3D::Vector3D{0, 0, BeamLenght / 2 - WEIGTH});
+			myEngine.mvMatrixStack.addHomothety(STP3D::Vector3D{WEIGTH, WEIGTH, BeamLenght});
+			myEngine.updateMvMatrix();
+			cube->draw();
+		}
+		myEngine.mvMatrixStack.popMatrix();
+
+		myEngine.mvMatrixStack.pushMatrix();
+		{
+			myEngine.mvMatrixStack.addTranslation(STP3D::Vector3D{0, 1.5 * WEIGTH, HEIGHT - SupportLenght / 2.5});
+			myEngine.mvMatrixStack.addRotation(-M_PI / 5, STP3D::Vector3D{1, 0, 0});
+			myEngine.mvMatrixStack.addHomothety(STP3D::Vector3D{WEIGTH / 1.2, WEIGTH / 1.2, SupportLenght});
+			myEngine.updateMvMatrix();
+			cube->draw();
+		}
+		myEngine.mvMatrixStack.popMatrix();
+
+		myEngine.mvMatrixStack.pushMatrix(); // light
+		{
+			myEngine.setFlatColor(0.6, 0.5, 0.4);
+			myEngine.mvMatrixStack.addTranslation(STP3D::Vector3D{0, BeamLenght * 0.75, HEIGHT - 3});
+			myEngine.mvMatrixStack.addRotation(M_PI / 2, STP3D::Vector3D{1, 0, 0});
+			myEngine.mvMatrixStack.addHomothety(STP3D::Vector3D{0.1, 3, 0.1});
+			myEngine.updateMvMatrix();
+			cylinder->draw();
+		}
+		myEngine.mvMatrixStack.popMatrix();
+	}
+	myEngine.mvMatrixStack.popMatrix();
+
+	myEngine.mvMatrixStack.pushMatrix();
+	{
+		myEngine.mvMatrixStack.addTranslation(STP3D::Vector3D{0, BeamLenght * 0.75, HEIGHT - 5});
+		drawLantern(posX, posY, 0.75);
+	}
+	myEngine.mvMatrixStack.popMatrix();
+}
 
 void drawScene(double time_ellapsed, bool displayGrid)
 {
@@ -324,6 +530,15 @@ void drawScene(double time_ellapsed, bool displayGrid)
 	drawGround(displayGrid);
 	drawRailRoad();
 	drawTrain();
+	drawTrainBar();
+	myEngine.mvMatrixStack.pushMatrix();
+	myEngine.mvMatrixStack.addTranslation(STP3D::Vector3D{0, CELLSIZE / 2, 0});
+	// myEngine.mvMatrixStack.addRotation(M_PI, STP3D::Vector3D{0, 0, 1});
+	drawTrainBar();
+	myEngine.mvMatrixStack.popMatrix();
+	drawCompleteLantern(1, 0);
+	drawLantern(1, -3);
+	drawLantern(-3, -3);
 }
 
 Orientation defineCurveDir(Position prev, Position current, Position next)
@@ -345,4 +560,3 @@ Orientation defineCurveDir(Position prev, Position current, Position next)
 		return TopLeft;
 	}
 }
-
