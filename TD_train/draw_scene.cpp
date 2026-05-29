@@ -25,6 +25,11 @@ const int CELLSIZE = 10.f;
 
 void initScene(GridConfig const &gridConfig)
 {
+	myEngine.switchToPhongShading();
+	myEngine.setLightPosition({0, 0, 20, 1});
+	myEngine.setLightIntensity({400, 300, 100});
+	myEngine.switchToPhongShading();
+
 	config = gridConfig;
 	float r = 1.f;
 	std::vector<float> points{0.0, 0.0, 0.0, 0.0, 0.0, 10.0, 0.0, 0.0, 0.0, 0.0, 10.0, 0.0, 0.0, 0.0, 0.0, 10.0, 0.0, 0.0};
@@ -91,6 +96,7 @@ void initScene(GridConfig const &gridConfig)
 
 void drawGround(bool displayGrid)
 {
+	myEngine.setNormalForConvex2DShape({0, 0, 1});
 	myEngine.mvMatrixStack.pushMatrix();
 	{
 		myEngine.mvMatrixStack.addHomothety(CELLSIZE);
@@ -116,7 +122,7 @@ void drawGround(bool displayGrid)
 		}
 	}
 	myEngine.mvMatrixStack.popMatrix();
-	myEngine.updateMvMatrix();
+	myEngine.setNormalForConvex2DShape({0, 0, 0});
 }
 
 void drawOneRail()
@@ -308,16 +314,18 @@ void drawRailRoad()
 
 void drawTrapezoid()
 {
-	myEngine.mvMatrixStack.pushMatrix();
+	myEngine.setNormalForConvex2DShape({0, -1, 0});
 	{
 		for (int i = 0; i < 4; i++)
 		{
-			myEngine.mvMatrixStack.addRotation(M_PI / 2, STP3D::Vector3D(0, 0, 1));
+			myEngine.mvMatrixStack.pushMatrix();
+			myEngine.mvMatrixStack.addRotation(i*M_PI / 2, STP3D::Vector3D(0, 0, 1));
 			myEngine.updateMvMatrix();
 			trapezoid.drawShape();
+			myEngine.mvMatrixStack.popMatrix();
 		}
 	}
-	myEngine.mvMatrixStack.popMatrix();
+	myEngine.setNormalForConvex2DShape({0, 0, 0});
 }
 
 void drawLantern(int posX, int posY, float scale)
@@ -444,12 +452,15 @@ void drawCompleteLantern(int posX, int posY)
 
 void drawScene(double time_ellapsed, bool displayGrid)
 {
+	//drawSphere(time_ellapsed);
 	drawFrame();
+	myEngine.switchToPhongShading();
 	drawGround(displayGrid);
 	drawRailRoad();
 	drawCompleteLantern(1, 0);
 	drawLantern(1, -3);
 	drawLantern(-3, -3);
+	myEngine.switchToFlatShading();
 }
 
 Orientation defineCurveDir(Position prev, Position current, Position next)
