@@ -5,6 +5,7 @@
 #include "tools/shaders.hpp"
 #include <iostream>
 #include "grid.hpp"
+#include "custom_shapes.hpp"
 
 using namespace glbasimac;
 using namespace STP3D;
@@ -148,6 +149,7 @@ int main(int argc, char ** argv)
 	CHECK_GL;
 
 	initScene(gridConfig);
+	initShapes();
 	double elapsedTime{0.0};
 
 	/* Loop until the user closes the window */

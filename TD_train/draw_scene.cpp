@@ -1,4 +1,5 @@
 #include "draw_scene.hpp"
+#include "custom_shapes.hpp"
 
 /// Camera parameters
 float angle_theta{45.0}; // Angle between x axis and viewpoint
@@ -9,17 +10,13 @@ bool flag_anim_rot_arm{false};
 
 GridConfig config;
 
-GLBI_Engine myEngine;
 GLBI_Set_Of_Points somePoints(3);
 GLBI_Convex_2D_Shape ground{3};
 GLBI_Convex_2D_Shape grid{3};
-GLBI_Convex_2D_Shape trapezoid{3};
 
 IndexedMesh *sphere;
 StandardMesh *cone;
 IndexedMesh *cube;
-IndexedMesh *cylinder;
-GLBI_Convex_2D_Shape disk;
 
 const int CELLSIZE = 10.f;
 
@@ -31,11 +28,9 @@ void initScene(GridConfig const &gridConfig)
 	myEngine.switchToPhongShading();
 
 	config = gridConfig;
-	float r = 1.f;
+
 	std::vector<float> points{0.0, 0.0, 0.0, 0.0, 0.0, 10.0, 0.0, 0.0, 0.0, 0.0, 10.0, 0.0, 0.0, 0.0, 0.0, 10.0, 0.0, 0.0};
 	std::vector<float> colors{0.0, 0.0, 1.0, 0.0, 0.0, 1.0, 0.0, 1.0, 0.0, 0.0, 1.0, 0.0, 1.0, 0.0, 0.0, 1.0, 0.0, 0.0};
-
-	std::vector<float> disk_origin{};
 
 	somePoints.initSet(points, colors);
 
@@ -65,21 +60,10 @@ void initScene(GridConfig const &gridConfig)
 		0.0,
 	};
 
-	for (int i = 0; i <= 100; i++)
-	{
-		disk_origin.push_back(r * cos(2 * (M_PI / 100.0f) * i));
-		disk_origin.push_back(r * sin(2 * (M_PI / 100.0f) * i));
-	}
-	disk.initShape(disk_origin);
-
 	ground.initShape(groundSquare);
 	ground.changeNature(GL_TRIANGLE_FAN);
 	grid.initShape(gridSquare);
 	grid.changeNature(GL_LINES);
-
-	trapezoid.initShape(trapezoidPoints);
-	trapezoid.changeNature(GL_LINES);
-	trapezoid.changeNature(GL_TRIANGLE_FAN);
 
 	sphere = basicSphere(1.0);
 	sphere->createVAO();
@@ -89,9 +73,6 @@ void initScene(GridConfig const &gridConfig)
 
 	cube = basicCube(1.0);
 	cube->createVAO();
-
-	cylinder = basicCylinder(1.f, 1.f);
-	cylinder->createVAO();
 }
 
 void drawGround(bool displayGrid)
@@ -170,12 +151,9 @@ void drawBallast()
 
 	myEngine.mvMatrixStack.pushMatrix();
 	{
-		myEngine.mvMatrixStack.addTranslation(STP3D::Vector3D{LENGTH / 2, 0, 0});
-		myEngine.mvMatrixStack.addHomothety(STP3D::Vector3D{LENGTH, RR, RR});
 		myEngine.mvMatrixStack.addRotation(M_PI / 2, STP3D::Vector3D{0, 0, 1});
-
 		myEngine.updateMvMatrix();
-		cylinder->draw();
+		drawClosedCylinder(LENGTH, RR, RR);
 	}
 	myEngine.mvMatrixStack.popMatrix();
 }
@@ -312,22 +290,6 @@ void drawRailRoad()
 	}
 }
 
-void drawTrapezoid()
-{
-	myEngine.setNormalForConvex2DShape({0, -1, 0});
-	{
-		for (int i = 0; i < 4; i++)
-		{
-			myEngine.mvMatrixStack.pushMatrix();
-			myEngine.mvMatrixStack.addRotation(i*M_PI / 2, STP3D::Vector3D(0, 0, 1));
-			myEngine.updateMvMatrix();
-			trapezoid.drawShape();
-			myEngine.mvMatrixStack.popMatrix();
-		}
-	}
-	myEngine.setNormalForConvex2DShape({0, 0, 0});
-}
-
 void drawLantern(int posX, int posY, float scale)
 {
 	const float BaseSize = 2.f;
@@ -452,7 +414,6 @@ void drawCompleteLantern(int posX, int posY)
 
 void drawScene(double time_ellapsed, bool displayGrid)
 {
-	//drawSphere(time_ellapsed);
 	drawFrame();
 	myEngine.switchToPhongShading();
 	drawGround(displayGrid);
