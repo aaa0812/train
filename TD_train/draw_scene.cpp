@@ -1,5 +1,4 @@
 #include "draw_scene.hpp"
-#include "custom_shapes.hpp"
 
 /// Camera parameters
 float angle_theta{45.0}; // Angle between x axis and viewpoint
@@ -421,6 +420,7 @@ void drawScene(double time_ellapsed, bool displayGrid)
 	drawCompleteLantern(1, 0);
 	drawLantern(1, -3);
 	drawLantern(-3, -3);
+	drawLever(-1, 2);
 	myEngine.switchToFlatShading();
 }
 
