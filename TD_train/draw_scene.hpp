@@ -1,12 +1,8 @@
 #pragma once
 
-#include "glbasimac/glbi_engine.hpp"
-#include "glbasimac/glbi_set_of_points.hpp"
-#include "glbasimac/glbi_convex_2D_shape.hpp"
-#include "tools/basic_mesh.hpp"
-#include "grid.hpp"
-
-using namespace glbasimac;
+#include "global.hpp"
+#include "custom_shapes.hpp"
+#include "scene_items.hpp"
 
 /* Camera parameters and functions */
 static const float Z_NEAR{0.1f};
@@ -16,9 +12,6 @@ extern float angle_phy;   // Angle between z axis and viewpoint
 extern float dist_zoom;   // Distance between origin and viewpoint
 extern bool flag_anim_rot_scale;
 extern bool flag_anim_rot_arm;
-
-/* OpenGL Engine */
-extern GLBI_Engine myEngine;
 
 enum Orientation
 {
@@ -49,9 +42,6 @@ void drawSphere(double time_ellapsed);
 void rotateSphere(double time_ellapsed, float radius, STP3D::Vector3D origin_point = {0.0, 0.0, 0.0});
 
 void drawRailRoad();
-
-void drawTrain();
-void drawTrapezoid();
 
 void drawLantern(int posX, int posY, float scale = 1.f);
 
