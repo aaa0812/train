@@ -3,6 +3,7 @@
 #include "global.hpp"
 #include "custom_shapes.hpp"
 #include "scene_items.hpp"
+#include "train_items.hpp"
 
 /* Camera parameters and functions */
 static const float Z_NEAR{0.1f};

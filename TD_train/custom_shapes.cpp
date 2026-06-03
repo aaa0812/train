@@ -4,6 +4,7 @@ GLBI_Convex_2D_Shape trapezoid{3};
 IndexedMesh *cylinder;
 GLBI_Convex_2D_Shape disk;
 GLBI_Engine myEngine;
+IndexedMesh *baseCube;
 
 void initShapes()
 {
@@ -36,6 +37,9 @@ void initShapes()
 
     cylinder = basicCylinder(1.f, 1.f);
     cylinder->createVAO();
+
+    baseCube = basicCube(1.0);
+    baseCube->createVAO();
 }
 
 void drawTrapezoid()
@@ -56,32 +60,37 @@ void drawTrapezoid()
 
 void drawClosedCylinder(float const lenght, float const width, float const height)
 {
-    myEngine.setNormalForConvex2DShape({0, 1, 0}); //normals not defined by default for the disk
-    myEngine.mvMatrixStack.addTranslation(Vector3D{0, -lenght / 2, 0}); //center the cylinder
     myEngine.mvMatrixStack.pushMatrix();
-	{
-        //first disk
+    {
+        myEngine.setNormalForConvex2DShape({0, 1, 0});                      // normals not defined by default for the disk
+        myEngine.mvMatrixStack.addTranslation(Vector3D{0, -lenght / 2, 0}); // center the cylinder
+        // first disk
         myEngine.mvMatrixStack.pushMatrix();
         {
-            myEngine.mvMatrixStack.addRotation(M_PI/2, Vector3D(1, 0, 0));
+            myEngine.mvMatrixStack.addRotation(M_PI / 2, Vector3D(1, 0, 0));
             myEngine.mvMatrixStack.addHomothety(Vector3D(width, height, 0));
             myEngine.updateMvMatrix();
             disk.drawShape();
         }
         myEngine.mvMatrixStack.popMatrix();
-        //second disk
+        // second disk
         myEngine.mvMatrixStack.pushMatrix();
         {
-            myEngine.mvMatrixStack.addRotation(M_PI/2, Vector3D(1, 0, 0));
+            myEngine.mvMatrixStack.addRotation(M_PI / 2, Vector3D(1, 0, 0));
             myEngine.mvMatrixStack.addTranslation(Vector3D{0, 0, -lenght});
             myEngine.mvMatrixStack.addHomothety(Vector3D(width, height, 0));
             myEngine.updateMvMatrix();
             disk.drawShape();
         }
         myEngine.mvMatrixStack.popMatrix();
-		myEngine.mvMatrixStack.addHomothety(Vector3D{width, lenght, height});
-		myEngine.updateMvMatrix();
-		cylinder->draw();
-	}
+
+        myEngine.mvMatrixStack.pushMatrix();
+        {
+            myEngine.mvMatrixStack.addHomothety(Vector3D{width, lenght, height});
+            myEngine.updateMvMatrix();
+            cylinder->draw();
+        }
+        myEngine.mvMatrixStack.popMatrix();
+    }
     myEngine.mvMatrixStack.popMatrix();
 }

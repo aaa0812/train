@@ -421,6 +421,7 @@ void drawScene(double time_ellapsed, bool displayGrid)
 	drawLantern(1, -3);
 	drawLantern(-3, -3);
 	drawLever(-1, 2);
+	drawTrain(0, 0, 0);
 	myEngine.switchToFlatShading();
 }
 
