@@ -19,6 +19,8 @@ IndexedMesh *cube;
 
 const int CELLSIZE = 10.f;
 
+std::vector<Position> lightsPos;
+
 void initScene(GridConfig const &gridConfig)
 {
 	myEngine.switchToPhongShading();
@@ -27,6 +29,17 @@ void initScene(GridConfig const &gridConfig)
 	myEngine.switchToPhongShading();
 
 	config = gridConfig;
+
+	// add positions of lanterns in the vec lightsPos
+	lightsPos.emplace_back(Position(-2, 2));
+	lightsPos.emplace_back(Position(-3, -3));
+	lightsPos.emplace_back(Position(-1, -1));
+
+	// loop on lightsPos to place lights
+	for (Position pos : lightsPos)
+	{
+		myEngine.addALight(Vector4D(pos.x * CELLSIZE + CELLSIZE / 2, pos.y * CELLSIZE + CELLSIZE / 2, 4, 1), Vector3D(100, 50, 10));
+	}
 
 	std::vector<float> points{0.0, 0.0, 0.0, 0.0, 0.0, 10.0, 0.0, 0.0, 0.0, 0.0, 10.0, 0.0, 0.0, 0.0, 0.0, 10.0, 0.0, 0.0};
 	std::vector<float> colors{0.0, 0.0, 1.0, 0.0, 0.0, 1.0, 0.0, 1.0, 0.0, 0.0, 1.0, 0.0, 1.0, 0.0, 0.0, 1.0, 0.0, 0.0};
@@ -317,7 +330,7 @@ void drawLantern(int posX, int posY, float scale)
 			myEngine.mvMatrixStack.addTranslation(STP3D::Vector3D{0, 0, WEIGTH / 2});
 			myEngine.mvMatrixStack.pushMatrix();
 			{
-				myEngine.setFlatColor(0.6, 0.5, 0.0);
+				myEngine.setFlatColor(1, 1, 0.0);
 				myEngine.mvMatrixStack.addHomothety(STP3D::Vector3D{1, 1, LightHeight});
 				myEngine.updateMvMatrix();
 				drawTrapezoid();
@@ -418,8 +431,10 @@ void drawScene(double time_ellapsed, bool displayGrid)
 	drawGround(displayGrid);
 	drawRailRoad();
 	drawCompleteLantern(1, 0);
-	drawLantern(1, -3);
-	drawLantern(-3, -3);
+	for (Position pos : lightsPos)
+	{
+		drawLantern(pos.x, pos.y);
+	}
 	drawLever(-1, 2);
 	myEngine.switchToFlatShading();
 }
