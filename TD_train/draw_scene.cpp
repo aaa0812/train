@@ -19,6 +19,8 @@ IndexedMesh *cube;
 
 const int CELLSIZE = 10.f;
 
+double timeEllapsed;
+
 void initScene(GridConfig const &gridConfig)
 {
 	myEngine.switchToPhongShading();
@@ -258,6 +260,7 @@ void drawCompleteLantern(int posX, int posY)
 
 void drawScene(double time_ellapsed, bool displayGrid)
 {
+	timeEllapsed = time_ellapsed;
 	drawFrame();
 	myEngine.switchToPhongShading();
 	drawGround(displayGrid);
@@ -266,6 +269,6 @@ void drawScene(double time_ellapsed, bool displayGrid)
 	drawLantern(1, -3);
 	drawLantern(-3, -3);
 	drawLever(-1, 2);
-	drawTrain(0, 0, 0);
+	drawTrain(railroad[static_cast<int>(time_ellapsed)].pos.x, railroad[static_cast<int>(time_ellapsed)].pos.y, 0);
 	myEngine.switchToFlatShading();
 }

@@ -13,3 +13,5 @@ extern GLBI_Engine myEngine;
 extern GridConfig config;
 
 extern const int CELLSIZE;
+
+extern double timeEllapsed;
