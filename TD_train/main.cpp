@@ -89,6 +89,7 @@ void onMouseButton(GLFWwindow *window, int button, int action, int /*mods*/)
 	}
 }
 
+
 int main(int argc, char ** argv)
 {
 	const std::string path { (argc >= 2) ? argv[1] : "grid.json" };

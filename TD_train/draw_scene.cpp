@@ -1,4 +1,7 @@
 #include "draw_scene.hpp"
+#define STB_IMAGE_IMPLEMENTATION
+#include "tools/stb_image.h"
+#include "glbasimac/glbi_texture.hpp"
 
 /// Camera parameters
 float angle_theta{45.0}; // Angle between x axis and viewpoint
@@ -16,6 +19,12 @@ GLBI_Convex_2D_Shape grid{3};
 IndexedMesh *sphere;
 StandardMesh *cone;
 IndexedMesh *cube;
+GLBI_Texture myTexture;
+GLBI_Texture metalTexture;
+GLBI_Texture lightMetalTexture;
+GLBI_Texture dirtyWoodTexture;
+GLBI_Texture groundTexture;
+GLBI_Texture goldTexture;
 
 const int CELLSIZE = 10.f;
 
@@ -72,6 +81,64 @@ void initScene(GridConfig const &gridConfig)
 
 	cube = basicCube(1.0);
 	cube->createVAO();
+
+	// Load texture image from file **METAL TEXTURE**
+	int tex_w = 0, tex_h = 0, tex_channels = 0;
+	unsigned char *pixels = stbi_load("metal_texture.png", &tex_w, &tex_h, &tex_channels, 0);
+	if (pixels != nullptr) {
+		metalTexture.createTexture();
+		metalTexture.attachTexture();
+		metalTexture.loadImage((unsigned int)tex_w, (unsigned int)tex_h, (unsigned int)tex_channels, pixels);
+		metalTexture.setParameters(GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+		metalTexture.setParameters(GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+		metalTexture.detachTexture();
+		stbi_image_free(pixels);
+	} else {
+		std::cerr << "failed to load metal_texture.png: " << stbi_failure_reason() << std::endl;
+	}
+
+	// Load texture image from file **GOLD TEXTURE**
+	pixels = stbi_load("gold_texture.png", &tex_w, &tex_h, &tex_channels, 0);
+	if (pixels != nullptr) {
+		goldTexture.createTexture();
+		goldTexture.attachTexture();
+		goldTexture.loadImage((unsigned int)tex_w, (unsigned int)tex_h, (unsigned int)tex_channels, pixels);
+		goldTexture.setParameters(GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+		goldTexture.setParameters(GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+		goldTexture.detachTexture();
+		stbi_image_free(pixels);
+	} else {
+		std::cerr << "failed to load gold_texture.png: " << stbi_failure_reason() << std::endl;
+	}
+
+	// Load texture image from file **LIGHT METAL TEXTURE**
+	pixels = stbi_load("light_metal_texture.png", &tex_w, &tex_h, &tex_channels, 0);
+	if (pixels != nullptr) {
+		lightMetalTexture.createTexture();
+		lightMetalTexture.attachTexture();
+		lightMetalTexture.loadImage((unsigned int)tex_w, (unsigned int)tex_h, (unsigned int)tex_channels, pixels);
+		lightMetalTexture.setParameters(GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+		lightMetalTexture.setParameters(GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+		lightMetalTexture.detachTexture();
+		stbi_image_free(pixels);
+	} else {
+		std::cerr << "failed to load light_metal_texture.png: " << stbi_failure_reason() << std::endl;
+	}
+
+	// Load texture image from file **DIRTY WOOD TEXTURE**
+	pixels = stbi_load("dirty_wood_texture.png", &tex_w, &tex_h, &tex_channels, 0);
+	if (pixels != nullptr) {
+		dirtyWoodTexture.createTexture();
+		dirtyWoodTexture.attachTexture();
+		dirtyWoodTexture.loadImage((unsigned int)tex_w, (unsigned int)tex_h, (unsigned int)tex_channels, pixels);
+		dirtyWoodTexture.setParameters(GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+		dirtyWoodTexture.setParameters(GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+		dirtyWoodTexture.detachTexture();
+		stbi_image_free(pixels);
+	} else {
+		std::cerr << "failed to load dirty_wood_texture.png: " << stbi_failure_reason() << std::endl;
+	}
+
 }
 
 void drawGround(bool displayGrid)
@@ -324,6 +391,8 @@ void drawTrainBar()
 		myEngine.updateMvMatrix();
 		// cylinder->draw();
 		drawClosedCylinder(1, 1, 1);
+
+		
 	}
 
 	myEngine.mvMatrixStack.popMatrix();
@@ -361,6 +430,7 @@ void drawTrainLights()
 		myEngine.updateMvMatrix();
 		drawClosedCylinder(0.75f, 0.75f, 0.75f);
 
+			metalTexture.attachTexture();
 			myEngine.mvMatrixStack.pushMatrix();
 		    {
 				myEngine.setFlatColor(0.84f, 0.74f, 0.14f);
@@ -370,6 +440,7 @@ void drawTrainLights()
 				sphere->draw();
 			}
 			myEngine.mvMatrixStack.popMatrix();
+			metalTexture.detachTexture();
 	}
 
 	myEngine.mvMatrixStack.popMatrix();
@@ -406,8 +477,13 @@ static void drawGoldNugget(const STP3D::Vector3D& translation, float angle, cons
 	myEngine.mvMatrixStack.addTranslation(translation);
 	myEngine.mvMatrixStack.addRotation(angle, axis);
 	myEngine.mvMatrixStack.addHomothety(scale);
+	// myEngine.updateMvMatrix();
+	myEngine.activateTexturing(true);
+	goldTexture.attachTexture();
 	myEngine.updateMvMatrix();
 	cube->draw();
+	goldTexture.detachTexture();
+	myEngine.activateTexturing(false);
 	myEngine.mvMatrixStack.popMatrix();
 }
 
@@ -480,8 +556,12 @@ void drawTrain()
 	myEngine.mvMatrixStack.pushMatrix();
 	{
 		myEngine.mvMatrixStack.addHomothety(STP3D::Vector3D{SR, LENGTH, SR});
+		myEngine.activateTexturing(true);
+		metalTexture.attachTexture();
 		myEngine.updateMvMatrix();
 		cube->draw();
+		metalTexture.detachTexture();
+		myEngine.activateTexturing(false);
 	}
 	myEngine.mvMatrixStack.popMatrix();
 
@@ -491,7 +571,12 @@ void drawTrain()
 		myEngine.mvMatrixStack.addHomothety(STP3D::Vector3D{SR +0.75f, LENGTH +0.75f, 0.5f});
 		myEngine.mvMatrixStack.addTranslation(STP3D::Vector3D{0, 0, 3.6f});
 		myEngine.updateMvMatrix();
+		myEngine.activateTexturing(true);
+		lightMetalTexture.attachTexture();
+		myEngine.updateMvMatrix();
 		cube->draw();
+		lightMetalTexture.detachTexture();
+		myEngine.activateTexturing(false);
 	}
 	myEngine.mvMatrixStack.popMatrix();
 
@@ -538,9 +623,11 @@ void drawLantern(int posX, int posY, float scale)
 			myEngine.mvMatrixStack.pushMatrix();
 			{
 				myEngine.setFlatColor(0.3, 0.3, 0.3);
+				metalTexture.attachTexture();
 				myEngine.mvMatrixStack.addHomothety(STP3D::Vector3D{1.2, 1.2, WEIGTH});
 				myEngine.updateMvMatrix();
 				cube->draw();
+				metalTexture.detachTexture();
 			}
 			myEngine.mvMatrixStack.popMatrix();
 
@@ -621,10 +708,50 @@ void drawCompleteLantern(int posX, int posY)
 	myEngine.mvMatrixStack.popMatrix();
 }
 
+// void textureTest()
+// {
+// 	int x = 200;
+// 	int y = 0;
+// 	int channels = 4;
+// 	unsigned char *data = stbi_load("metal_texture.png", &x, &y, &channels, 0);
+// 	if (data != nullptr)
+// 	{
+// 		stbi_image_free(data);
+// 		return;
+// 	}
+// 	std::cerr << "failed to load texture " << std::endl;
+// }
+
+void drawTexturedCube()
+{
+	myEngine.setFlatColor(1, 0, 0);
+
+	myEngine.mvMatrixStack.pushMatrix();
+	myEngine.mvMatrixStack.addTranslation(STP3D::Vector3D{0, 0, 5});
+
+
+	myEngine.mvMatrixStack.pushMatrix();
+	{
+		myEngine.mvMatrixStack.addHomothety(STP3D::Vector3D{4, 4, 4});
+		myEngine.mvMatrixStack.addRotation(M_PI / 4, STP3D::Vector3D{0, 1, 0});
+		myEngine.activateTexturing(true);
+		metalTexture.attachTexture();
+		myEngine.updateMvMatrix();
+		cube->draw();
+		metalTexture.detachTexture();
+		myEngine.activateTexturing(false);
+	}
+	myEngine.mvMatrixStack.popMatrix();
+	myEngine.mvMatrixStack.popMatrix();
+	
+}
+
 void drawScene(double time_ellapsed, bool displayGrid)
 {
 	drawFrame();
 	myEngine.switchToPhongShading();
+	
+	// textureTest();
 	drawGround(displayGrid);
 	drawRailRoad();
 	drawTrain();
@@ -640,6 +767,8 @@ void drawScene(double time_ellapsed, bool displayGrid)
 	myEngine.mvMatrixStack.popMatrix();
 
 	drawGold();
+	drawTexturedCube();
+
 	drawCompleteLantern(1, 0);
 	drawLantern(1, -3);
 	drawLantern(-3, -3);
