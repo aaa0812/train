@@ -128,11 +128,11 @@ public:
 	/// Regarde un cran à droite
 	/// Rotation dans le sens horaire par rapport au vecteur haut
 	/// \param angle angle de la rotation <b>en degré</b>
-	void lookRight(float angle) {orientat_cam[1] -= angle*M_PI/180.0;reactuOrientation();};
+	void lookRight(float angle) {orientat_cam[2] -= angle*M_PI/180.0;reactuOrientation();};
 	/// Regarde un cran à gauche
 	/// Rotation dans le sens trigonométrique par rapport au vecteur haut
 	/// \param angle angle de la rotation <b>en degré</b>
-	void lookLeft(float angle) {orientat_cam[1] += angle*M_PI/180.0;reactuOrientation();};
+	void lookLeft(float angle) {orientat_cam[2] += angle*M_PI/180.0;reactuOrientation();};
 	/// Regarde en haut
 	/// Rotation dans le sens horaire par rapport au vecteur haut^vecteur vue
 	/// \param angle angle de la rotation <b>en degré</b>
@@ -188,7 +188,7 @@ inline void FPSCamera::reactuViewMatrix() {
 }
 
 inline void FPSCamera::reactuOrientation() {
-	Matrix4D matt = Matrix4D::rotation(orientat_cam[1],1);
+	Matrix4D matt = Matrix4D::rotation(orientat_cam[2],2);
 	Vector3D left_vec = (matt.xDir(top_init_cam^dir_init_cam)).homogeneate();
 	Matrix4D matu = Matrix4D::rotation(orientat_cam[0],left_vec);
 	top__dir_cam = (matu.xDir(top_init_cam)).homogeneate();
@@ -205,6 +205,7 @@ inline std::ostream& operator<<(std::ostream& os,const FPSCamera& src) {
 	os <<"\ttop dir cam    : "<<src.top__dir_cam<<std::endl;
 	os <<"\tRot % x        : "<<src.orientat_cam[0]<<std::endl;
 	os <<"\tRot % y        : "<<src.orientat_cam[1]<<std::endl;
+	os <<"\tRot % z        : "<<src.orientat_cam[2]<<std::endl;
 	os <<"**************************************"<<std::endl;
 	return os;
 }

@@ -57,21 +57,6 @@ void initScene(GridConfig const &gridConfig)
 								  1, 1, 0.0,
 								  0, 1, 0.0};
 
-	std::vector<float> trapezoidPoints{
-		-0.3,
-		-0.3,
-		0.0,
-		-0.5,
-		-0.5,
-		1.0,
-		0.5,
-		-0.5,
-		1.0,
-		0.3,
-		-0.3,
-		0.0,
-	};
-
 	ground.initShape(groundSquare);
 	ground.changeNature(GL_TRIANGLE_FAN);
 	grid.initShape(gridSquare);
@@ -317,7 +302,7 @@ void drawTrainBar()
 	{
 		myEngine.setFlatColor(0.2f, 0.2f, 0.2f);
 		myEngine.mvMatrixStack.addRotation(M_PI / 2, STP3D::Vector3D{0, 0, 1});
-		myEngine.mvMatrixStack.addTranslation(STP3D::Vector3D{-2.5f,  0, - SR / 2});
+		myEngine.mvMatrixStack.addTranslation(STP3D::Vector3D{-2.5f, 0, -SR / 2});
 		// myEngine.mvMatrixStack.addHomothety(STP3D::Vector3D{0.25F, 6, 0.25f});
 
 		myEngine.updateMvMatrix();
@@ -331,7 +316,7 @@ void drawTrainBar()
 	{
 		myEngine.setFlatColor(0.6f, 0.6f, 0.6f);
 		myEngine.mvMatrixStack.addRotation(M_PI / 2, STP3D::Vector3D{0, 0, 1});
-		myEngine.mvMatrixStack.addTranslation(STP3D::Vector3D{-2.5f,  -(SR /2) -0.25f, - SR / 2});
+		myEngine.mvMatrixStack.addTranslation(STP3D::Vector3D{-2.5f, -(SR / 2) - 0.25f, -SR / 2});
 		myEngine.mvMatrixStack.addHomothety(STP3D::Vector3D{1, 1, 1});
 
 		myEngine.updateMvMatrix();
@@ -345,7 +330,7 @@ void drawTrainBar()
 	{
 		myEngine.setFlatColor(0.6f, 0.6f, 0.6f);
 		myEngine.mvMatrixStack.addRotation(M_PI / 2, STP3D::Vector3D{0, 0, 1});
-		myEngine.mvMatrixStack.addTranslation(STP3D::Vector3D{-2.5f,  +(SR /2) +0.25f, - SR / 2});
+		myEngine.mvMatrixStack.addTranslation(STP3D::Vector3D{-2.5f, +(SR / 2) + 0.25f, -SR / 2});
 		myEngine.mvMatrixStack.addHomothety(STP3D::Vector3D{1, 1, 1});
 
 		myEngine.updateMvMatrix();
@@ -354,7 +339,6 @@ void drawTrainBar()
 	}
 	myEngine.mvMatrixStack.popMatrix();
 	myEngine.mvMatrixStack.popMatrix();
-
 }
 
 void drawTrainLights()
@@ -368,21 +352,21 @@ void drawTrainLights()
 	{
 		myEngine.setFlatColor(0.2f, 0.2f, 0.2f);
 		// myEngine.mvMatrixStack.addRotation(M_PI / 2, STP3D::Vector3D{0, 0, 1});
-		myEngine.mvMatrixStack.addTranslation(STP3D::Vector3D{1,  3.5f,  0.5f});
+		myEngine.mvMatrixStack.addTranslation(STP3D::Vector3D{1, 3.5f, 0.5f});
 		// myEngine.mvMatrixStack.addHomothety(STP3D::Vector3D{0.25F, 6, 0.25f});
 
 		myEngine.updateMvMatrix();
 		drawClosedCylinder(0.75f, 0.75f, 0.75f);
 
-			myEngine.mvMatrixStack.pushMatrix();
-		    {
-				myEngine.setFlatColor(0.84f, 0.74f, 0.14f);
-				myEngine.mvMatrixStack.addTranslation(STP3D::Vector3D{0,  0.75f,  0});
-				myEngine.mvMatrixStack.addHomothety(STP3D::Vector3D{0.65f, 0.40f, 0.65f});
-				myEngine.updateMvMatrix();
-				sphere->draw();
-			}
-			myEngine.mvMatrixStack.popMatrix();
+		myEngine.mvMatrixStack.pushMatrix();
+		{
+			myEngine.setFlatColor(0.84f, 0.74f, 0.14f);
+			myEngine.mvMatrixStack.addTranslation(STP3D::Vector3D{0, 0.75f, 0});
+			myEngine.mvMatrixStack.addHomothety(STP3D::Vector3D{0.65f, 0.40f, 0.65f});
+			myEngine.updateMvMatrix();
+			sphere->draw();
+		}
+		myEngine.mvMatrixStack.popMatrix();
 	}
 
 	myEngine.mvMatrixStack.popMatrix();
@@ -391,21 +375,21 @@ void drawTrainLights()
 	{
 		myEngine.setFlatColor(0.2f, 0.2f, 0.2f);
 		// myEngine.mvMatrixStack.addRotation(M_PI / 2, STP3D::Vector3D{0, 0, 1});
-		myEngine.mvMatrixStack.addTranslation(STP3D::Vector3D{-1,  3.5f,  0.5f});
+		myEngine.mvMatrixStack.addTranslation(STP3D::Vector3D{-1, 3.5f, 0.5f});
 		// myEngine.mvMatrixStack.addHomothety(STP3D::Vector3D{0.25F, 6, 0.25f});
 
 		myEngine.updateMvMatrix();
 		drawClosedCylinder(0.75f, 0.75f, 0.75f);
 
-			myEngine.mvMatrixStack.pushMatrix();
-		    {
-				myEngine.setFlatColor(0.84f, 0.74f, 0.14f);
-				myEngine.mvMatrixStack.addTranslation(STP3D::Vector3D{0,  0.75f,  0});
-				myEngine.mvMatrixStack.addHomothety(STP3D::Vector3D{0.65f, 0.40f, 0.65f});
-				myEngine.updateMvMatrix();
-				sphere->draw();
-			}
-			myEngine.mvMatrixStack.popMatrix();
+		myEngine.mvMatrixStack.pushMatrix();
+		{
+			myEngine.setFlatColor(0.84f, 0.74f, 0.14f);
+			myEngine.mvMatrixStack.addTranslation(STP3D::Vector3D{0, 0.75f, 0});
+			myEngine.mvMatrixStack.addHomothety(STP3D::Vector3D{0.65f, 0.40f, 0.65f});
+			myEngine.updateMvMatrix();
+			sphere->draw();
+		}
+		myEngine.mvMatrixStack.popMatrix();
 	}
 
 	myEngine.mvMatrixStack.popMatrix();
@@ -413,7 +397,7 @@ void drawTrainLights()
 	myEngine.mvMatrixStack.popMatrix();
 }
 
-static void drawGoldNugget(const STP3D::Vector3D& translation, float angle, const STP3D::Vector3D& axis, const STP3D::Vector3D& scale)
+static void drawGoldNugget(const STP3D::Vector3D &translation, float angle, const STP3D::Vector3D &axis, const STP3D::Vector3D &scale)
 {
 	myEngine.mvMatrixStack.pushMatrix();
 	myEngine.mvMatrixStack.addTranslation(translation);
@@ -431,41 +415,41 @@ void drawGold()
 	myEngine.mvMatrixStack.pushMatrix();
 	myEngine.mvMatrixStack.addTranslation(STP3D::Vector3D{CELLSIZE / 2, CELLSIZE / 2, 5});
 
-	drawGoldNugget( 							// center nugget
-		STP3D::Vector3D{-0.05f, 0.0f, 2.5f}, 		//translation (x,y,z)
-		M_PI / 6, 						   		// angle (rad)
-		STP3D::Vector3D{0, 1, 1}, 		   		// axe (x,y,z)
-		STP3D::Vector3D{2.65f, 2.90f, 2.85f});  // homothety (x,y,z)
-		   
-	drawGoldNugget(								// front - left nugget
-		STP3D::Vector3D{-1.00f, 2.15f, 2.5f}, 	//translation (x,y,z)
-		M_PI / 12, 								// angle (rad)
-		STP3D::Vector3D{1, 1, 0}, 				// axe (x,y,z)
-		STP3D::Vector3D{1.75f, 1.75f, 1.75f}); 	// homothety (x,y,z)
+	drawGoldNugget(							   // center nugget
+		STP3D::Vector3D{-0.05f, 0.0f, 2.5f},   // translation (x,y,z)
+		M_PI / 6,							   // angle (rad)
+		STP3D::Vector3D{0, 1, 1},			   // axe (x,y,z)
+		STP3D::Vector3D{2.65f, 2.90f, 2.85f}); // homothety (x,y,z)
 
-	drawGoldNugget(								// front - right nugget
-		STP3D::Vector3D{0.85f, 1.85f, 2.30f}, 	//translation (x,y,z)
-		- M_PI / 8, 							// angle (rad)
-		STP3D::Vector3D{0, 1, 1}, 				// axe (x,y,z)
-		STP3D::Vector3D{1.90f, 2.10f, 1.90f}); 	// homothety (x,y,z)
+	drawGoldNugget(							   // front - left nugget
+		STP3D::Vector3D{-1.00f, 2.15f, 2.5f},  // translation (x,y,z)
+		M_PI / 12,							   // angle (rad)
+		STP3D::Vector3D{1, 1, 0},			   // axe (x,y,z)
+		STP3D::Vector3D{1.75f, 1.75f, 1.75f}); // homothety (x,y,z)
 
-	drawGoldNugget(								// back - right nugget
-		STP3D::Vector3D{0.85f, -1.85f, 2.30f}, 	//translation (x,y,z)
-		M_PI / 4, 								// angle (rad)
-		STP3D::Vector3D{0, 1, 1}, 				// axe (x,y,z)
-		STP3D::Vector3D{1.90f, 2.10f, 1.90f}); 	// homothety (x,y,z)
+	drawGoldNugget(							   // front - right nugget
+		STP3D::Vector3D{0.85f, 1.85f, 2.30f},  // translation (x,y,z)
+		-M_PI / 8,							   // angle (rad)
+		STP3D::Vector3D{0, 1, 1},			   // axe (x,y,z)
+		STP3D::Vector3D{1.90f, 2.10f, 1.90f}); // homothety (x,y,z)
 
-	drawGoldNugget( 							// back - left nugget
-		STP3D::Vector3D{-0.95f, -1.f, 2.75f}, 	//translation (x,y,z)
-		- M_PI / 6, 						   	// angle (rad)
-		STP3D::Vector3D{0, 1, 1}, 	   			// axe (x,y,z)
-		STP3D::Vector3D{1.05f, 1.30f, 2.85f});  // homothety (x,y,z)
+	drawGoldNugget(							   // back - right nugget
+		STP3D::Vector3D{0.85f, -1.85f, 2.30f}, // translation (x,y,z)
+		M_PI / 4,							   // angle (rad)
+		STP3D::Vector3D{0, 1, 1},			   // axe (x,y,z)
+		STP3D::Vector3D{1.90f, 2.10f, 1.90f}); // homothety (x,y,z)
 
-	drawGoldNugget( 							// back - left nugget
-		STP3D::Vector3D{-0.95f, -2.4f, 2.25f}, 	//translation (x,y,z)
-		M_PI / 4, 						   		// angle (rad)
-		STP3D::Vector3D{1, 1, 0}, 	   			// axe (x,y,z)
-		STP3D::Vector3D{1.95f, 1.90f, 1.85f});  // homothety (x,y,z)
+	drawGoldNugget(							   // back - left nugget
+		STP3D::Vector3D{-0.95f, -1.f, 2.75f},  // translation (x,y,z)
+		-M_PI / 6,							   // angle (rad)
+		STP3D::Vector3D{0, 1, 1},			   // axe (x,y,z)
+		STP3D::Vector3D{1.05f, 1.30f, 2.85f}); // homothety (x,y,z)
+
+	drawGoldNugget(							   // back - left nugget
+		STP3D::Vector3D{-0.95f, -2.4f, 2.25f}, // translation (x,y,z)
+		M_PI / 4,							   // angle (rad)
+		STP3D::Vector3D{1, 1, 0},			   // axe (x,y,z)
+		STP3D::Vector3D{1.95f, 1.90f, 1.85f}); // homothety (x,y,z)
 
 	myEngine.mvMatrixStack.popMatrix();
 	myEngine.updateMvMatrix();
@@ -501,7 +485,7 @@ void drawTrain()
 	myEngine.mvMatrixStack.pushMatrix();
 	{
 		myEngine.setFlatColor(0.6f, 0.6f, 0.6f);
-		myEngine.mvMatrixStack.addHomothety(STP3D::Vector3D{SR +0.75f, LENGTH +0.75f, 0.5f});
+		myEngine.mvMatrixStack.addHomothety(STP3D::Vector3D{SR + 0.75f, LENGTH + 0.75f, 0.5f});
 		myEngine.mvMatrixStack.addTranslation(STP3D::Vector3D{0, 0, 3.6f});
 		myEngine.updateMvMatrix();
 		cube->draw();
@@ -644,12 +628,12 @@ void drawScene(double time_ellapsed, bool displayGrid)
 	drawTrainLights();
 
 	myEngine.mvMatrixStack.pushMatrix();
-		myEngine.mvMatrixStack.addTranslation(STP3D::Vector3D{0, 0, -0.5f});
-		drawTrainBar();
-		myEngine.mvMatrixStack.pushMatrix();
-		myEngine.mvMatrixStack.addTranslation(STP3D::Vector3D{0, CELLSIZE / 2, 0});
-		drawTrainBar();
-		myEngine.mvMatrixStack.popMatrix();
+	myEngine.mvMatrixStack.addTranslation(STP3D::Vector3D{0, 0, -0.5f});
+	drawTrainBar();
+	myEngine.mvMatrixStack.pushMatrix();
+	myEngine.mvMatrixStack.addTranslation(STP3D::Vector3D{0, CELLSIZE / 2, 0});
+	drawTrainBar();
+	myEngine.mvMatrixStack.popMatrix();
 	myEngine.mvMatrixStack.popMatrix();
 
 	drawGold();
