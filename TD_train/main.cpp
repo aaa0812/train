@@ -23,10 +23,10 @@ static const double FRAMERATE_IN_SECONDS = 1. / 30.;
 static bool displayGrid = false;
 
 float posX = 0;
-float posY = 0;
-float posZ = 10;
+float posY = 40;
+float posZ = 15;
 
-FPSCamera cam(Vector3D(posX, posY, posZ), Vector3D(0.0, 1.0, -1), Vector3D(0.0,0.0,1.0));
+FPSCamera cam(Vector3D(posX, posY, posZ), Vector3D(0.0, -1.0, 0), Vector3D(0.0,0.0,1.0));
 
 /* Error handling function */
 void onError(int error, const char *description)

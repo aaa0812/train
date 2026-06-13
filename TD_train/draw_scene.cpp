@@ -9,6 +9,8 @@ bool flag_anim_rot_arm{false};
 
 GridConfig config;
 
+double timeEllapsed;
+
 GLBI_Set_Of_Points somePoints(3);
 GLBI_Convex_2D_Shape ground{3};
 GLBI_Convex_2D_Shape grid{3};
@@ -40,6 +42,9 @@ void initScene(GridConfig const &gridConfig)
 	{
 		myEngine.addALight(Vector4D(pos.x * CELLSIZE + CELLSIZE / 2, pos.y * CELLSIZE + CELLSIZE / 2, 4, 1), Vector3D(100, 50, 10));
 	}
+
+	myEngine.addALight(Vector4D(0, 0, 0, 1), Vector3D(10, 10, 5));
+	myEngine.addALight(Vector4D(0, 0, 0, 1), Vector3D(10, 10, 5));
 
 	std::vector<float> points{0.0, 0.0, 0.0, 0.0, 0.0, 10.0, 0.0, 0.0, 0.0, 0.0, 10.0, 0.0, 0.0, 0.0, 0.0, 10.0, 0.0, 0.0};
 	std::vector<float> colors{0.0, 0.0, 1.0, 0.0, 0.0, 1.0, 0.0, 1.0, 0.0, 0.0, 1.0, 0.0, 1.0, 0.0, 0.0, 1.0, 0.0, 0.0};
@@ -343,10 +348,17 @@ void drawTrainBar()
 
 void drawTrainLights()
 {
+	const float tileCenter = CELLSIZE / 2;
 	myEngine.setFlatColor(0.25f, 0.25f, 0.25f);
 
 	myEngine.mvMatrixStack.pushMatrix();
-	myEngine.mvMatrixStack.addTranslation(STP3D::Vector3D{CELLSIZE / 2, CELLSIZE / 2, 5});
+	myEngine.mvMatrixStack.addTranslation(STP3D::Vector3D{tileCenter, tileCenter, 5});
+
+	myEngine.setLightPosition(Vector4D(tileCenter + 1, tileCenter + 5.f, 5 + 0.5f, 1), lightsPos.size() + 1);
+	myEngine.setLightPosition(Vector4D(tileCenter - 1, tileCenter + 5.f, 5 + 0.5f, 1), lightsPos.size() + 2);
+
+	myEngine.setLightIntensity(Vector3D(10 + fmod(timeEllapsed, 0.5), 10 + fmod(timeEllapsed, 0.5), 5 + fmod(timeEllapsed, 0.5)), lightsPos.size() + 1);
+	myEngine.setLightIntensity(Vector3D(10 + fmod(timeEllapsed, 0.5), 10 + fmod(timeEllapsed, 0.5), 5 + fmod(timeEllapsed, 0.5)), lightsPos.size() + 2);
 
 	myEngine.mvMatrixStack.pushMatrix(); // socle lights droit
 	{
@@ -620,6 +632,7 @@ void drawCompleteLantern(int posX, int posY)
 
 void drawScene(double time_ellapsed, bool displayGrid)
 {
+	timeEllapsed = time_ellapsed;
 	drawFrame();
 	myEngine.switchToPhongShading();
 	drawGround(displayGrid);
