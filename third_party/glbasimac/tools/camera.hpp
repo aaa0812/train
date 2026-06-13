@@ -46,7 +46,7 @@ public:
 	FPSCamera() {
 		position_cam = Vector3D();
 		view_dir_cam = dir_init_cam = Vector3D(0.0,0.0,-1.0);
-		top__dir_cam = top_init_cam = Vector3D(0.0,1.0,0.0);
+		top__dir_cam = top_init_cam = Vector3D(0.0,0.0,1.0);
 		orientat_cam = Vector3D();
 		reactuOrientation();
 		projMatrix = Matrix4D::perspective(-1.0*STP3D_DEFAULT_LEFT_RIGHT,STP3D_DEFAULT_LEFT_RIGHT,
@@ -54,7 +54,7 @@ public:
 		                                    STP3D_DEFAULT_NEAR,STP3D_DEFAULT_FAR);
 	};
 	FPSCamera(Vector3D pos_init, Vector3D dir_init,
-	          Vector3D top_init = Vector3D(0.0,1.0,0.0),
+	          Vector3D top_init = Vector3D(0.0,0.0,1.0),
 	          Vector3D orient_init = Vector3D()) {
 		position_cam = pos_init;
 		view_dir_cam = dir_init_cam = dir_init;
@@ -86,7 +86,7 @@ public:
 
 	/// Return the camera to its initial position and orientation
 	void reinitPosCam(Vector3D pos_init,Vector3D dir_init,
-	                  Vector3D top_init = Vector3D(0.0,1.0,0.0),
+	                  Vector3D top_init = Vector3D(0.0,0.0,1.0),
 	                  Vector3D orient_init = Vector3D());
 
 	/// Deprecated in OpenGL 3+
@@ -205,11 +205,9 @@ inline std::ostream& operator<<(std::ostream& os,const FPSCamera& src) {
 	os <<"\ttop dir cam    : "<<src.top__dir_cam<<std::endl;
 	os <<"\tRot % x        : "<<src.orientat_cam[0]<<std::endl;
 	os <<"\tRot % y        : "<<src.orientat_cam[1]<<std::endl;
-	os <<"\tRot % z        : "<<src.orientat_cam[2]<<std::endl;
 	os <<"**************************************"<<std::endl;
 	return os;
 }
 
 } // Namespace ends
 #endif
-

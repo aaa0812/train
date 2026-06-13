@@ -26,8 +26,7 @@ float posX = 0;
 float posY = 0;
 float posZ = 10;
 
-Vector3D pos_camera = Vector3D(posX, posY, posZ);
-FPSCamera cam(pos_camera, Vector3D(0.0, 1.0, -1));
+FPSCamera cam(Vector3D(posX, posY, posZ), Vector3D(0.0, 1.0, -1), Vector3D(0.0,0.0,1.0));
 
 /* Error handling function */
 void onError(int error, const char *description)
