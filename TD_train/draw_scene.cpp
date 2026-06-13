@@ -708,6 +708,75 @@ void drawCompleteLantern(int posX, int posY)
 	myEngine.mvMatrixStack.popMatrix();
 }
 
+void drawTrainStation(int posX, int posY)
+{
+	const float WEIGTH = 1.f; // weight
+	const int HEIGHT = 15;
+	const int BeamLenght = HEIGHT / 2.5;
+	const int SupportLenght = HEIGHT / 3;
+	myEngine.setFlatColor(0.5, 0.4, 0.3);
+
+	myEngine.mvMatrixStack.pushMatrix();
+	myEngine.mvMatrixStack.addTranslation(STP3D::Vector3D{posX * CELLSIZE + CELLSIZE / 2, posY * CELLSIZE + CELLSIZE / 2, 0}); // place the object on the cell center
+
+	for (int i = 0; i < 2; i++)
+	{
+		myEngine.mvMatrixStack.pushMatrix();
+		{
+			myEngine.mvMatrixStack.addTranslation(STP3D::Vector3D{0, -16.f * i, 0});
+
+			myEngine.mvMatrixStack.pushMatrix();
+			{
+				myEngine.mvMatrixStack.addTranslation(STP3D::Vector3D{0, 0, HEIGHT / 2});
+				myEngine.mvMatrixStack.addHomothety(STP3D::Vector3D{WEIGTH, WEIGTH, HEIGHT});
+				
+				myEngine.activateTexturing(true);
+				dirtyWoodTexture.attachTexture();
+				myEngine.updateMvMatrix();
+				cube->draw();
+				dirtyWoodTexture.detachTexture();
+				myEngine.activateTexturing(false);
+			}
+			myEngine.mvMatrixStack.popMatrix();
+
+			myEngine.mvMatrixStack.pushMatrix();
+			{
+				myEngine.mvMatrixStack.addTranslation(STP3D::Vector3D{-4, 0, HEIGHT});
+				myEngine.mvMatrixStack.addRotation(-M_PI / 2, STP3D::Vector3D{0, 1, 0});
+				myEngine.mvMatrixStack.addRotation(M_PI / 12, STP3D::Vector3D{0, 1, 0});
+				myEngine.mvMatrixStack.addHomothety(STP3D::Vector3D{WEIGTH / 1.2, WEIGTH * 1.2, SupportLenght * 2.5});
+				
+				myEngine.activateTexturing(true);
+				dirtyWoodTexture.attachTexture();
+				myEngine.updateMvMatrix();
+				cube->draw();
+				dirtyWoodTexture.detachTexture();
+				myEngine.activateTexturing(false);
+			}
+			myEngine.mvMatrixStack.popMatrix();
+
+			myEngine.mvMatrixStack.pushMatrix();
+			{
+				myEngine.mvMatrixStack.addTranslation(STP3D::Vector3D{-2, 0, HEIGHT - SupportLenght / 2.5});
+				myEngine.mvMatrixStack.addRotation(-M_PI / 2, STP3D::Vector3D{0, 1, 0});
+				myEngine.mvMatrixStack.addRotation(M_PI / 4, STP3D::Vector3D{0, 1, 0});
+				myEngine.mvMatrixStack.addHomothety(STP3D::Vector3D{WEIGTH / 1.3, WEIGTH / 1.3 , SupportLenght * 1.2});
+				
+				myEngine.activateTexturing(true);
+				dirtyWoodTexture.attachTexture();
+				myEngine.updateMvMatrix();
+				cube->draw();
+				dirtyWoodTexture.detachTexture();
+				myEngine.activateTexturing(false);
+			}
+			myEngine.mvMatrixStack.popMatrix();
+		}
+		myEngine.mvMatrixStack.popMatrix();
+	}
+
+	myEngine.mvMatrixStack.popMatrix();
+
+}
 // void textureTest()
 // {
 // 	int x = 200;
@@ -769,7 +838,8 @@ void drawScene(double time_ellapsed, bool displayGrid)
 	drawGold();
 	drawTexturedCube();
 
-	drawCompleteLantern(1, 0);
+	// drawCompleteLantern(1, 0);
+	drawTrainStation(1, 0);
 	drawLantern(1, -3);
 	drawLantern(-3, -3);
 	drawLever(-1, 2);
