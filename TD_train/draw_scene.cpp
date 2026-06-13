@@ -22,9 +22,11 @@ IndexedMesh *cube;
 GLBI_Texture myTexture;
 GLBI_Texture metalTexture;
 GLBI_Texture lightMetalTexture;
-GLBI_Texture dirtyWoodTexture;
 GLBI_Texture groundTexture;
 GLBI_Texture goldTexture;
+GLBI_Texture dirtyWoodTexture;
+GLBI_Texture rustedWoodTexture;
+GLBI_Texture plankWoodTexture;
 
 const int CELLSIZE = 10.f;
 
@@ -137,6 +139,48 @@ void initScene(GridConfig const &gridConfig)
 		stbi_image_free(pixels);
 	} else {
 		std::cerr << "failed to load dirty_wood_texture.png: " << stbi_failure_reason() << std::endl;
+	}
+
+	// Load texture image from file **RUSTED WOOD TEXTURE**
+	pixels = stbi_load("rusted_wood_texture.png", &tex_w, &tex_h, &tex_channels, 0);
+	if (pixels != nullptr) {
+		rustedWoodTexture.createTexture();
+		rustedWoodTexture.attachTexture();
+		rustedWoodTexture.loadImage((unsigned int)tex_w, (unsigned int)tex_h, (unsigned int)tex_channels, pixels);
+		rustedWoodTexture.setParameters(GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+		rustedWoodTexture.setParameters(GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+		rustedWoodTexture.detachTexture();
+		stbi_image_free(pixels);
+	} else {
+		std::cerr << "failed to load rusted_wood_texture.png: " << stbi_failure_reason() << std::endl;
+	}
+
+	// Load texture image from file **PLANK WOOD TEXTURE**
+	pixels = stbi_load("plank_wood_texture.png", &tex_w, &tex_h, &tex_channels, 0);
+	if (pixels != nullptr) {
+		plankWoodTexture.createTexture();
+		plankWoodTexture.attachTexture();
+		plankWoodTexture.loadImage((unsigned int)tex_w, (unsigned int)tex_h, (unsigned int)tex_channels, pixels);
+		plankWoodTexture.setParameters(GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+		plankWoodTexture.setParameters(GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+		plankWoodTexture.detachTexture();
+		stbi_image_free(pixels);
+	} else {
+		std::cerr << "failed to load plank_wood_texture.png: " << stbi_failure_reason() << std::endl;
+	}
+
+	// Load texture image from file **GROUND TEXTURE**
+	pixels = stbi_load("ground_texture.png", &tex_w, &tex_h, &tex_channels, 0);
+	if (pixels != nullptr) {
+		groundTexture.createTexture();
+		groundTexture.attachTexture();
+		groundTexture.loadImage((unsigned int)tex_w, (unsigned int)tex_h, (unsigned int)tex_channels, pixels);
+		groundTexture.setParameters(GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+		groundTexture.setParameters(GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+		groundTexture.detachTexture();
+		stbi_image_free(pixels);
+	} else {
+		std::cerr << "failed to load ground_texture.png: " << stbi_failure_reason() << std::endl;
 	}
 
 }
@@ -721,7 +765,7 @@ void drawTrainStation(int posX, int posY)
 
 	for (int i = 0; i < 2; i++)
 	{
-		myEngine.mvMatrixStack.pushMatrix();
+		myEngine.mvMatrixStack.pushMatrix(); // POTENCES
 		{
 			myEngine.mvMatrixStack.addTranslation(STP3D::Vector3D{0, -16.f * i, 0});
 
@@ -774,6 +818,60 @@ void drawTrainStation(int posX, int posY)
 		myEngine.mvMatrixStack.popMatrix();
 	}
 
+	myEngine.mvMatrixStack.popMatrix();
+
+	for (int i = 0; i < 3; i++)
+	{
+
+	myEngine.mvMatrixStack.pushMatrix(); // planches
+			{
+				myEngine.mvMatrixStack.addTranslation(STP3D::Vector3D{posX * CELLSIZE + CELLSIZE / 2, posY * CELLSIZE + CELLSIZE / 2, 0}); // place the object on the cell center
+				myEngine.mvMatrixStack.addTranslation(STP3D::Vector3D{0, -8, 3 + 3.5 * i});
+				myEngine.mvMatrixStack.addRotation(M_PI / 2, STP3D::Vector3D{0, 1, 0});
+				myEngine.mvMatrixStack.addHomothety(STP3D::Vector3D{2.5, 16, 0.25});
+				
+				myEngine.activateTexturing(true);
+				dirtyWoodTexture.attachTexture();
+				myEngine.updateMvMatrix();
+				cube->draw();
+				dirtyWoodTexture.detachTexture();
+				myEngine.activateTexturing(false);
+			}
+	myEngine.mvMatrixStack.popMatrix();
+
+	}
+
+	myEngine.mvMatrixStack.pushMatrix(); // SOL
+			{
+				myEngine.mvMatrixStack.addTranslation(STP3D::Vector3D{posX * CELLSIZE + CELLSIZE / 2, posY * CELLSIZE + CELLSIZE / 2, 0}); // place the object on the cell center
+				myEngine.mvMatrixStack.addTranslation(STP3D::Vector3D{-2.5, -8, 0});
+				myEngine.mvMatrixStack.addRotation(M_PI / 2, STP3D::Vector3D{0, 0, 1});
+				myEngine.mvMatrixStack.addHomothety(STP3D::Vector3D{20, 8, 0.25});
+				
+				myEngine.activateTexturing(true);
+				plankWoodTexture.attachTexture();
+				myEngine.updateMvMatrix();
+				cube->draw();
+				plankWoodTexture.detachTexture();
+				myEngine.activateTexturing(false);
+			}
+	myEngine.mvMatrixStack.popMatrix();
+
+	myEngine.mvMatrixStack.pushMatrix(); // TOIT
+			{
+				myEngine.mvMatrixStack.addTranslation(STP3D::Vector3D{posX * CELLSIZE + CELLSIZE / 2, posY * CELLSIZE + CELLSIZE / 2, 0}); // place the object on the cell center
+				myEngine.mvMatrixStack.addTranslation(STP3D::Vector3D{-4, -8, HEIGHT});
+				
+				myEngine.mvMatrixStack.addRotation(M_PI / 12, STP3D::Vector3D{0, 1, 0});
+				myEngine.mvMatrixStack.addHomothety(STP3D::Vector3D{12, 16, 0.25});
+				
+				myEngine.activateTexturing(true);
+				dirtyWoodTexture.attachTexture();
+				myEngine.updateMvMatrix();
+				cube->draw();
+				dirtyWoodTexture.detachTexture();
+				myEngine.activateTexturing(false);
+			}
 	myEngine.mvMatrixStack.popMatrix();
 
 }
