@@ -201,7 +201,11 @@ void drawGround(bool displayGrid)
 					myEngine.mvMatrixStack.addTranslation(STP3D::Vector3D{i, j, 0});
 					myEngine.updateMvMatrix();
 					myEngine.setFlatColor(0.5, 0.5, 0.5);
+					myEngine.activateTexturing(true);
+					groundTexture.attachTexture();
 					ground.drawShape();
+					groundTexture.detachTexture();
+					myEngine.activateTexturing(false);
 					if (displayGrid)
 					{
 						myEngine.setFlatColor(1, 0, 0);
@@ -934,7 +938,6 @@ void drawScene(double time_ellapsed, bool displayGrid)
 	myEngine.mvMatrixStack.popMatrix();
 
 	drawGold();
-	drawTexturedCube();
 
 	// drawCompleteLantern(1, 0);
 	drawTrainStation(1, 0);
