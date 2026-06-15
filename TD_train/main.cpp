@@ -87,11 +87,9 @@ void onKey(GLFWwindow *window, int key, int /*scancode*/, int action, int /*mods
 		break;
 	case GLFW_KEY_RIGHT:
 		cam.lookRight(1);
-		std::cout << cam;
 		break;
 	case GLFW_KEY_LEFT:
 		cam.lookLeft(1);
-		std::cout << cam;
 		break;
 	default:
 		std::cerr << "Touche non gérée " << key << std::endl;
