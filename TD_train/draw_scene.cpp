@@ -93,11 +93,14 @@ void drawGround(bool displayGrid)
 				myEngine.mvMatrixStack.pushMatrix();
 				{
 					myEngine.mvMatrixStack.addTranslation(STP3D::Vector3D{i, j, 0});
-					myEngine.updateMvMatrix();
 					myEngine.setFlatColor(0.5, 0.5, 0.5);
 					myEngine.activateTexturing(true);
 					groundTexture.attachTexture();
-					ground.drawShape();
+					myEngine.mvMatrixStack.pushMatrix();
+					myEngine.mvMatrixStack.addHomothety(Vector3D(1, 1, 1 / CELLSIZE));
+					myEngine.updateMvMatrix();
+					cube->draw();
+					myEngine.mvMatrixStack.popMatrix();
 					groundTexture.detachTexture();
 					myEngine.activateTexturing(false);
 					if (displayGrid)
