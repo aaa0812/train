@@ -44,9 +44,9 @@ void rotateSphere(double time_ellapsed, float radius, STP3D::Vector3D origin_poi
 
 void drawRailRoad();
 
-void drawLantern(int posX, int posY, float scale = 1.f);
+void drawLantern(int posX, int posY, float scale = 1.f, bool simpleLantern = true);
 
-void drawCompleteLantern(int posX, int posY);
+void drawCompleteLantern(int posX, int posY, float angle = 0);
 
 void drawTrainStation(int posX, int posY, float angle = 0);
 

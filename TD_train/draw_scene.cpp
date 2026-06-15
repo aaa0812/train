@@ -33,8 +33,8 @@ void initScene(GridConfig const &gridConfig)
 	config = gridConfig;
 
 	// add positions of lanterns in the vec lightsPos
-	lightsPos.emplace_back(Position(-2, 2));
-	lightsPos.emplace_back(Position(-3, -3));
+	lightsPos.emplace_back(Position(2, -2));
+	lightsPos.emplace_back(Position(-3, 2));
 	lightsPos.emplace_back(Position(-1, -1));
 
 	// loop on lightsPos to place lights
@@ -81,7 +81,6 @@ void initScene(GridConfig const &gridConfig)
 
 void drawGround(bool displayGrid)
 {
-	myEngine.setNormalForConvex2DShape({0, 0, 1});
 	myEngine.mvMatrixStack.pushMatrix();
 	{
 		myEngine.mvMatrixStack.addHomothety(CELLSIZE);
@@ -114,7 +113,6 @@ void drawGround(bool displayGrid)
 		}
 	}
 	myEngine.mvMatrixStack.popMatrix();
-	myEngine.setNormalForConvex2DShape({0, 0, 0});
 }
 
 void drawOneRail()
@@ -533,7 +531,7 @@ void drawTrain()
 	myEngine.updateMvMatrix();
 }
 
-void drawLantern(int posX, int posY, float scale)
+void drawLantern(int posX, int posY, float scale, bool simpleLantern)
 {
 	const float BaseSize = 2.f;
 	const float LightHeight = 2.f;
@@ -544,7 +542,10 @@ void drawLantern(int posX, int posY, float scale)
 
 	myEngine.mvMatrixStack.pushMatrix();
 	{
-		myEngine.mvMatrixStack.addTranslation(STP3D::Vector3D{posX * CELLSIZE + CELLSIZE / 2, posY * CELLSIZE + CELLSIZE / 2, WEIGTH / 2}); // place the object on the cell center
+		if (simpleLantern)
+		{
+			myEngine.mvMatrixStack.addTranslation(STP3D::Vector3D{posX * CELLSIZE + CELLSIZE / 2, posY * CELLSIZE + CELLSIZE / 2, WEIGTH / 2}); // place the object on the cell center
+		}
 		myEngine.mvMatrixStack.addHomothety(scale);
 		myEngine.mvMatrixStack.pushMatrix();
 		{
@@ -595,7 +596,7 @@ void drawLantern(int posX, int posY, float scale)
 	myEngine.mvMatrixStack.popMatrix();
 }
 
-void drawCompleteLantern(int posX, int posY)
+void drawCompleteLantern(int posX, int posY, float angle)
 {
 	const float WEIGTH = 1.f; // weight
 	const int HEIGHT = 15;
@@ -606,6 +607,7 @@ void drawCompleteLantern(int posX, int posY)
 	myEngine.mvMatrixStack.pushMatrix();
 	{
 		myEngine.mvMatrixStack.addTranslation(STP3D::Vector3D{posX * CELLSIZE + CELLSIZE / 2, posY * CELLSIZE + CELLSIZE / 2, 0}); // place the object on the cell center
+		myEngine.mvMatrixStack.addRotation(angle, Vector3D(0, 0, 1));
 		myEngine.mvMatrixStack.pushMatrix();
 		{
 			myEngine.mvMatrixStack.addTranslation(STP3D::Vector3D{0, 0, HEIGHT / 2});
@@ -647,13 +649,14 @@ void drawCompleteLantern(int posX, int posY)
 		}
 		myEngine.mvMatrixStack.popMatrix();
 	}
-	myEngine.mvMatrixStack.popMatrix();
 
 	myEngine.mvMatrixStack.pushMatrix();
 	{
 		myEngine.mvMatrixStack.addTranslation(STP3D::Vector3D{0, BeamLenght * 0.75, HEIGHT - 5});
-		drawLantern(posX, posY, 0.75);
+		drawLantern(0, 0, 0.75, false);
 	}
+	myEngine.mvMatrixStack.popMatrix();
+
 	myEngine.mvMatrixStack.popMatrix();
 }
 
@@ -821,6 +824,7 @@ void drawScene(double time_ellapsed, bool displayGrid)
 
 	drawGold();
 	drawCompleteLantern(1, 0);
+	drawCompleteLantern(-2, -4, -M_PI/2);
 	for (Position pos : lightsPos)
 	{
 		drawLantern(pos.x, pos.y);
