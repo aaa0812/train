@@ -48,6 +48,8 @@ void drawLantern(int posX, int posY, float scale = 1.f);
 
 void drawCompleteLantern(int posX, int posY);
 
+void drawTrainStation(int posX, int posY, float angle = 0);
+
 void drawScene(double time_ellapsed, bool displayGrid = false);
 
 Orientation defineCurveDir(Position prev, Position current, Position next);

@@ -1,6 +1,5 @@
 #include "draw_scene.hpp"
 
-
 /// Camera parameters
 float angle_theta{45.0}; // Angle between x axis and viewpoint
 float angle_phy{30.0};	 // Angle between z axis and viewpoint
@@ -334,8 +333,6 @@ void drawTrainBar()
 		myEngine.updateMvMatrix();
 		// cylinder->draw();
 		drawClosedCylinder(1, 1, 1);
-
-		
 	}
 
 	myEngine.mvMatrixStack.popMatrix();
@@ -379,17 +376,17 @@ void drawTrainLights()
 		myEngine.updateMvMatrix();
 		drawClosedCylinder(0.75f, 0.75f, 0.75f);
 
-			metalTexture.attachTexture();
-			myEngine.mvMatrixStack.pushMatrix();
-		    {
-				myEngine.setFlatColor(0.84f, 0.74f, 0.14f);
-				myEngine.mvMatrixStack.addTranslation(STP3D::Vector3D{0,  0.75f,  0});
-				myEngine.mvMatrixStack.addHomothety(STP3D::Vector3D{0.65f, 0.40f, 0.65f});
-				myEngine.updateMvMatrix();
-				sphere->draw();
-			}
-			myEngine.mvMatrixStack.popMatrix();
-			metalTexture.detachTexture();
+		metalTexture.attachTexture();
+		myEngine.mvMatrixStack.pushMatrix();
+		{
+			myEngine.setFlatColor(0.84f, 0.74f, 0.14f);
+			myEngine.mvMatrixStack.addTranslation(STP3D::Vector3D{0, 0.75f, 0});
+			myEngine.mvMatrixStack.addHomothety(STP3D::Vector3D{0.65f, 0.40f, 0.65f});
+			myEngine.updateMvMatrix();
+			sphere->draw();
+		}
+		myEngine.mvMatrixStack.popMatrix();
+		metalTexture.detachTexture();
 	}
 
 	myEngine.mvMatrixStack.popMatrix();
@@ -657,7 +654,7 @@ void drawCompleteLantern(int posX, int posY)
 	myEngine.mvMatrixStack.popMatrix();
 }
 
-void drawTrainStation(int posX, int posY)
+void drawTrainStation(int posX, int posY, float angle)
 {
 	const float WEIGTH = 1.f; // weight
 	const int HEIGHT = 15;
@@ -667,6 +664,7 @@ void drawTrainStation(int posX, int posY)
 
 	myEngine.mvMatrixStack.pushMatrix();
 	myEngine.mvMatrixStack.addTranslation(STP3D::Vector3D{posX * CELLSIZE + CELLSIZE / 2, posY * CELLSIZE + CELLSIZE / 2, 0}); // place the object on the cell center
+	myEngine.mvMatrixStack.addRotation(angle, Vector3D(0, 0, 1));
 
 	for (int i = 0; i < 2; i++)
 	{
@@ -678,7 +676,7 @@ void drawTrainStation(int posX, int posY)
 			{
 				myEngine.mvMatrixStack.addTranslation(STP3D::Vector3D{0, 0, HEIGHT / 2});
 				myEngine.mvMatrixStack.addHomothety(STP3D::Vector3D{WEIGTH, WEIGTH, HEIGHT});
-				
+
 				myEngine.activateTexturing(true);
 				dirtyWoodTexture.attachTexture();
 				myEngine.updateMvMatrix();
@@ -694,7 +692,7 @@ void drawTrainStation(int posX, int posY)
 				myEngine.mvMatrixStack.addRotation(-M_PI / 2, STP3D::Vector3D{0, 1, 0});
 				myEngine.mvMatrixStack.addRotation(M_PI / 12, STP3D::Vector3D{0, 1, 0});
 				myEngine.mvMatrixStack.addHomothety(STP3D::Vector3D{WEIGTH / 1.2, WEIGTH * 1.2, SupportLenght * 2.5});
-				
+
 				myEngine.activateTexturing(true);
 				dirtyWoodTexture.attachTexture();
 				myEngine.updateMvMatrix();
@@ -709,8 +707,8 @@ void drawTrainStation(int posX, int posY)
 				myEngine.mvMatrixStack.addTranslation(STP3D::Vector3D{-2, 0, HEIGHT - SupportLenght / 2.5});
 				myEngine.mvMatrixStack.addRotation(-M_PI / 2, STP3D::Vector3D{0, 1, 0});
 				myEngine.mvMatrixStack.addRotation(M_PI / 4, STP3D::Vector3D{0, 1, 0});
-				myEngine.mvMatrixStack.addHomothety(STP3D::Vector3D{WEIGTH / 1.3, WEIGTH / 1.3 , SupportLenght * 1.2});
-				
+				myEngine.mvMatrixStack.addHomothety(STP3D::Vector3D{WEIGTH / 1.3, WEIGTH / 1.3, SupportLenght * 1.2});
+
 				myEngine.activateTexturing(true);
 				dirtyWoodTexture.attachTexture();
 				myEngine.updateMvMatrix();
@@ -723,76 +721,57 @@ void drawTrainStation(int posX, int posY)
 		myEngine.mvMatrixStack.popMatrix();
 	}
 
-	myEngine.mvMatrixStack.popMatrix();
-
 	for (int i = 0; i < 3; i++)
 	{
 
-	myEngine.mvMatrixStack.pushMatrix(); // planches
-			{
-				myEngine.mvMatrixStack.addTranslation(STP3D::Vector3D{posX * CELLSIZE + CELLSIZE / 2, posY * CELLSIZE + CELLSIZE / 2, 0}); // place the object on the cell center
-				myEngine.mvMatrixStack.addTranslation(STP3D::Vector3D{0, -8, 3 + 3.5 * i});
-				myEngine.mvMatrixStack.addRotation(M_PI / 2, STP3D::Vector3D{0, 1, 0});
-				myEngine.mvMatrixStack.addHomothety(STP3D::Vector3D{2.5, 16, 0.25});
-				
-				myEngine.activateTexturing(true);
-				dirtyWoodTexture.attachTexture();
-				myEngine.updateMvMatrix();
-				cube->draw();
-				dirtyWoodTexture.detachTexture();
-				myEngine.activateTexturing(false);
-			}
-	myEngine.mvMatrixStack.popMatrix();
+		myEngine.mvMatrixStack.pushMatrix(); // planches
+		{
+			myEngine.mvMatrixStack.addTranslation(STP3D::Vector3D{0, -8, 3 + 3.5 * i});
+			myEngine.mvMatrixStack.addRotation(M_PI / 2, STP3D::Vector3D{0, 1, 0});
+			myEngine.mvMatrixStack.addHomothety(STP3D::Vector3D{2.5, 16, 0.25});
 
+			myEngine.activateTexturing(true);
+			dirtyWoodTexture.attachTexture();
+			myEngine.updateMvMatrix();
+			cube->draw();
+			dirtyWoodTexture.detachTexture();
+			myEngine.activateTexturing(false);
+		}
+		myEngine.mvMatrixStack.popMatrix();
 	}
 
 	myEngine.mvMatrixStack.pushMatrix(); // SOL
-			{
-				myEngine.mvMatrixStack.addTranslation(STP3D::Vector3D{posX * CELLSIZE + CELLSIZE / 2, posY * CELLSIZE + CELLSIZE / 2, 0}); // place the object on the cell center
-				myEngine.mvMatrixStack.addTranslation(STP3D::Vector3D{-2.5, -8, 0});
-				myEngine.mvMatrixStack.addRotation(M_PI / 2, STP3D::Vector3D{0, 0, 1});
-				myEngine.mvMatrixStack.addHomothety(STP3D::Vector3D{20, 8, 0.25});
-				
-				myEngine.activateTexturing(true);
-				plankWoodTexture.attachTexture();
-				myEngine.updateMvMatrix();
-				cube->draw();
-				plankWoodTexture.detachTexture();
-				myEngine.activateTexturing(false);
-			}
+	{
+		myEngine.mvMatrixStack.addTranslation(STP3D::Vector3D{-2.5, -8, 0});
+		myEngine.mvMatrixStack.addRotation(M_PI / 2, STP3D::Vector3D{0, 0, 1});
+		myEngine.mvMatrixStack.addHomothety(STP3D::Vector3D{20, 8, 0.25});
+
+		myEngine.activateTexturing(true);
+		plankWoodTexture.attachTexture();
+		myEngine.updateMvMatrix();
+		cube->draw();
+		plankWoodTexture.detachTexture();
+		myEngine.activateTexturing(false);
+	}
 	myEngine.mvMatrixStack.popMatrix();
 
 	myEngine.mvMatrixStack.pushMatrix(); // TOIT
-			{
-				myEngine.mvMatrixStack.addTranslation(STP3D::Vector3D{posX * CELLSIZE + CELLSIZE / 2, posY * CELLSIZE + CELLSIZE / 2, 0}); // place the object on the cell center
-				myEngine.mvMatrixStack.addTranslation(STP3D::Vector3D{-4, -8, HEIGHT});
-				
-				myEngine.mvMatrixStack.addRotation(M_PI / 12, STP3D::Vector3D{0, 1, 0});
-				myEngine.mvMatrixStack.addHomothety(STP3D::Vector3D{12, 16, 0.25});
-				
-				myEngine.activateTexturing(true);
-				dirtyWoodTexture.attachTexture();
-				myEngine.updateMvMatrix();
-				cube->draw();
-				dirtyWoodTexture.detachTexture();
-				myEngine.activateTexturing(false);
-			}
-	myEngine.mvMatrixStack.popMatrix();
+	{
+		myEngine.mvMatrixStack.addTranslation(STP3D::Vector3D{-4, -8, HEIGHT});
 
+		myEngine.mvMatrixStack.addRotation(M_PI / 12, STP3D::Vector3D{0, 1, 0});
+		myEngine.mvMatrixStack.addHomothety(STP3D::Vector3D{12, 16, 0.25});
+
+		myEngine.activateTexturing(true);
+		dirtyWoodTexture.attachTexture();
+		myEngine.updateMvMatrix();
+		cube->draw();
+		dirtyWoodTexture.detachTexture();
+		myEngine.activateTexturing(false);
+	}
+	myEngine.mvMatrixStack.popMatrix();
+	myEngine.mvMatrixStack.popMatrix();
 }
-// void textureTest()
-// {
-// 	int x = 200;
-// 	int y = 0;
-// 	int channels = 4;
-// 	unsigned char *data = stbi_load("metal_texture.png", &x, &y, &channels, 0);
-// 	if (data != nullptr)
-// 	{
-// 		stbi_image_free(data);
-// 		return;
-// 	}
-// 	std::cerr << "failed to load texture " << std::endl;
-// }
 
 void drawTexturedCube()
 {
@@ -800,7 +779,6 @@ void drawTexturedCube()
 
 	myEngine.mvMatrixStack.pushMatrix();
 	myEngine.mvMatrixStack.addTranslation(STP3D::Vector3D{0, 0, 5});
-
 
 	myEngine.mvMatrixStack.pushMatrix();
 	{
@@ -815,7 +793,6 @@ void drawTexturedCube()
 	}
 	myEngine.mvMatrixStack.popMatrix();
 	myEngine.mvMatrixStack.popMatrix();
-	
 }
 
 void drawScene(double time_ellapsed, bool displayGrid)
@@ -823,7 +800,7 @@ void drawScene(double time_ellapsed, bool displayGrid)
 	timeEllapsed = time_ellapsed;
 	drawFrame();
 	myEngine.switchToPhongShading();
-	
+
 	// textureTest();
 	drawGround(displayGrid);
 	drawRailRoad();
@@ -845,7 +822,7 @@ void drawScene(double time_ellapsed, bool displayGrid)
 	{
 		drawLantern(pos.x, pos.y);
 	}
-	drawTrainStation(1, 0);
+	drawTrainStation(config.origin.x, config.origin.y, M_PI);
 	drawLever(-1, 2);
 	myEngine.switchToFlatShading();
 }
