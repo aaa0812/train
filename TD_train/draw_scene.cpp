@@ -775,6 +775,7 @@ void drawTrainStation(int posX, int posY, float angle)
 		dirtyWoodTexture.detachTexture();
 		myEngine.activateTexturing(false);
 	}
+
 	myEngine.mvMatrixStack.popMatrix();
 	myEngine.mvMatrixStack.popMatrix();
 }
@@ -800,6 +801,29 @@ void drawTexturedCube()
 	myEngine.mvMatrixStack.popMatrix();
 	myEngine.mvMatrixStack.popMatrix();
 }
+
+void drawCrate(int posX, int posY)
+{
+	myEngine.setFlatColor(1, 0, 0);
+
+	myEngine.mvMatrixStack.pushMatrix();
+	myEngine.mvMatrixStack.addTranslation(STP3D::Vector3D{posX, posY, 5});
+
+	myEngine.mvMatrixStack.pushMatrix();
+	{
+		myEngine.mvMatrixStack.addHomothety(STP3D::Vector3D{4, 4, 4});
+		myEngine.mvMatrixStack.addRotation(M_PI / 4, STP3D::Vector3D{0, 1, 0});
+		myEngine.activateTexturing(true);
+		crateTexture.attachTexture();
+		myEngine.updateMvMatrix();
+		cube->draw();
+		crateTexture.detachTexture();
+		myEngine.activateTexturing(false);
+	}
+	myEngine.mvMatrixStack.popMatrix();
+	myEngine.mvMatrixStack.popMatrix();
+}
+
 
 void drawScene(double time_ellapsed, bool displayGrid)
 {
@@ -830,6 +854,7 @@ void drawScene(double time_ellapsed, bool displayGrid)
 		drawLantern(pos.x, pos.y);
 	}
 	drawTrainStation(config.origin.x, config.origin.y, M_PI);
+	
 	drawLever(-1, 2);
 	myEngine.switchToFlatShading();
 }

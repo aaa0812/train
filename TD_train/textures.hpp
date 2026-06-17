@@ -10,5 +10,6 @@ extern GLBI_Texture goldTexture;
 extern GLBI_Texture dirtyWoodTexture;
 extern GLBI_Texture rustedWoodTexture;
 extern GLBI_Texture plankWoodTexture;
+extern GLBI_Texture crateTexture;
 
 void loadTextures();

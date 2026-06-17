@@ -9,6 +9,7 @@ GLBI_Texture goldTexture;
 GLBI_Texture dirtyWoodTexture;
 GLBI_Texture rustedWoodTexture;
 GLBI_Texture plankWoodTexture;
+GLBI_Texture crateTexture;
 
 void loadTextures()
 {
@@ -130,5 +131,22 @@ void loadTextures()
     else
     {
         std::cerr << "failed to load ground_texture.png: " << stbi_failure_reason() << std::endl;
+    }
+
+     // Load texture image from file **crate TEXTURE**
+    pixels = stbi_load("../assets/textures/crate_texture.png", &tex_w, &tex_h, &tex_channels, 0);
+    if (pixels != nullptr)
+    {
+        crateTexture.createTexture();
+        crateTexture.attachTexture();
+        crateTexture.loadImage((unsigned int)tex_w, (unsigned int)tex_h, (unsigned int)tex_channels, pixels);
+        crateTexture.setParameters(GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+        crateTexture.setParameters(GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+        crateTexture.detachTexture();
+        stbi_image_free(pixels);
+    }
+    else
+    {
+        std::cerr << "failed to load crate_texture.png: " << stbi_failure_reason() << std::endl;
     }
 }

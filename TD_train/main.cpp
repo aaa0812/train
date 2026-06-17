@@ -176,7 +176,7 @@ int main(int argc, char **argv)
 		double startTime = glfwGetTime();
 
 		/* Render begins here */
-		glClearColor(0.8f, 0.8f, 0.8f, 0.0f);
+		glClearColor(0.05f, 0.05f, 0.05f, 0.0f);
 
 		// TO DO EX01 part 2
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
