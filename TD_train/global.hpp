@@ -15,3 +15,5 @@ extern GridConfig config;
 extern const int CELLSIZE;
 
 extern double timeEllapsed;
+
+extern std::vector<Position> lightsPos;
